@@ -2,6 +2,7 @@ import express from "express";
 import verifyToken from "./middleware/auth.js";     // default import (see auth.js below)
 import showRouter from "./routes/show.js";
 import jwt from "jsonwebtoken";                     // ✅ use default import
+import favoritesRoutes from './routes/favoritesRoutes.js';
 
 const app = express();
 app.use(express.json());
@@ -28,6 +29,8 @@ app.get("/private/ping", verifyToken, (req, res) => {
 
 // Protect your shows API
 app.use("/shows", verifyToken, showRouter);
+app.use("/favorites", verifyToken, favoritesRoutes);
+
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`API on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`SceneIt server is now running on http://localhost:${PORT}`));

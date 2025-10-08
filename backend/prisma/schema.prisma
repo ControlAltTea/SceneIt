@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,27 +8,18 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum WatchStatus {
-  watching
-  completed
-  planned
-  dropped
-  removed
-}
-
 model Show {
-  id           BigInt   @id @default(autoincrement())
+  id           BigInt      @id @default(autoincrement())
   title        String
   genre        String?
   description  String?
   producer     String?
   release_year Int?
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-
-  episodes Episode[]
-  ratings  Rating[]
-  watch    Watchlist[]
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  episodes     Episode[]
+  ratings      Rating[]
+  watch        Watchlist[]
 }
 
 model Episode {
@@ -40,8 +30,7 @@ model Episode {
   name           String
   air_date       DateTime?
   created_at     DateTime  @default(now())
-
-  show Show @relation(fields: [show_id], references: [id], onDelete: Cascade)
+  show           Show      @relation(fields: [show_id], references: [id], onDelete: Cascade)
 
   @@unique([show_id, season_number, episode_number])
 }
@@ -54,8 +43,7 @@ model Rating {
   review     String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  show Show @relation(fields: [show_id], references: [id], onDelete: Cascade)
+  show       Show     @relation(fields: [show_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, show_id])
 }
@@ -67,8 +55,15 @@ model Watchlist {
   status     WatchStatus @default(planned)
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
-
-  show Show @relation(fields: [show_id], references: [id], onDelete: Cascade)
+  show       Show        @relation(fields: [show_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, show_id])
+}
+
+enum WatchStatus {
+  watching
+  completed
+  planned
+  dropped
+  removed
 }
