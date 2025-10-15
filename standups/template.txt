@@ -1,5 +1,5 @@
 Note-taker:
-Daily Standup - Monday
+Daily Standup - Monday (Indigenous Day/HOLIDAY)
 Team Member: 
 - What did you work on?
 
@@ -7,14 +7,17 @@ Team Member:
 
 - Any near-future blockers and how can we support you?
 
-Note-taker:
-Daily Standup - Tuesday
-Team Member: 
+Note-taker: Karla 
+Daily Standup - Tuesday (10/14/2025)
+Team Members: Karla and Rafiq
 - What did you work on?
-
+Understanding of what exactly the tasks that we assigned ourselves with clarfication with our professors Tea and Alex.
 - What are you going to work on?
+Karla-Finish the pagination of the search query. Learn and get more familiar with REACT & Prisma. Figure out to make sure POSTMAN works with search query.
+Rafiq-Working and understand prisma models. Reading up on REACT & Prisma documentation. 
 
 - Any near-future blockers and how can we support you?
+Availability of our teammates and Team communication is scattered. 
 
 Note-taker:
 Daily Standup - Wednesday
