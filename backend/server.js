@@ -42,4 +42,3 @@ app.use('/playlists', playlistsRouter);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`SceneIt server is now running on http://localhost:${PORT}`));
-
