@@ -1,5 +1,5 @@
 Note-taker:
-Daily Standup - Monday
+Daily Standup
 Team Member: 
 - What did you work on?
 
@@ -8,13 +8,13 @@ Team Member:
 - Any near-future blockers and how can we support you?
 
 Note-taker:
-Daily Standup - Tuesday
-Team Member: 
+Daily Standup
+Team Members:
 - What did you work on?
-
 - What are you going to work on?
 
 - Any near-future blockers and how can we support you?
+Availability of our teammates and Team communication is scattered. 
 
 Note-taker:
 Daily Standup - Wednesday

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ShowCard from "../components/ShowCard";
+import { useSearchParams } from "react-router-dom";
+import { fetchPage, PAGE_SIZE } from "../utils/paginationHelpers"; 
+
 
 const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"; // need to move later
 
