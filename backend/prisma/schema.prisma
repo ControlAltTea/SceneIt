@@ -8,23 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Show {
-  id            BigInt         @id @default(autoincrement())
-  title         String
-  genre         String?
-  description   String?
-  posterUrl     String?
-  producer      String?
-  releaseYear   Int?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now()) @updatedAt
-  episodes      Episode[]
-  favorites     Favorite[]
-  playlistShows PlaylistShow[]
-  ratings       Rating[]
-  watchlist     Watchlist[]
-}
-
 model Episode {
   id            BigInt    @id @default(autoincrement())
   showId        BigInt
@@ -55,7 +38,7 @@ model Watchlist {
   id        BigInt      @id @default(autoincrement())
   userId    String
   showId    BigInt
-  status    WatchStatus @default(planned)
+  status    WatchStatus @default(PLANNED)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @default(now()) @updatedAt
   show      Show        @relation(fields: [showId], references: [id], onDelete: Cascade)
@@ -63,23 +46,19 @@ model Watchlist {
   @@unique([userId, showId])
 }
 
-model Favorite {
-  id        BigInt   @id @default(autoincrement())
-  userId    String
-  showId    BigInt
-  createdAt DateTime @default(now())
-  show      Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, showId])
-}
-
 model Playlist {
-  id        BigInt         @id @default(autoincrement())
-  userId    String
-  name      String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @default(now()) @updatedAt
-  shows     PlaylistShow[]
+  id            BigInt         @id @default(autoincrement())
+  name          String
+  isPublic      Boolean        @default(true)
+  isFavorite    Boolean        @default(false)
+  ownerId       String
+  owner         User           @relation(fields: [ownerId], references: [id])
+  playlistShows PlaylistShow[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+
+  // this makes sure that the same user can't create two playlists with the same name
+  @@unique([name, ownerId])
 }
 
 model PlaylistShow {
@@ -89,13 +68,53 @@ model PlaylistShow {
   playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   show       Show     @relation(fields: [showId], references: [id], onDelete: Cascade)
 
+  // this makes sure that a given show can appear at most once in the same playlist
   @@unique([playlistId, showId])
 }
 
+model Show {
+  id            BigInt         @id @default(autoincrement())
+  tmdbId        Int            @unique
+  title         String
+  genres        Genre[]
+  description   String?
+  posterUrl     String?
+  producer      String?
+  releaseYear   Int?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  episodes      Episode[]
+  playlistShows PlaylistShow[]
+  ratings       Rating[]
+  watchlist     Watchlist[]
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  username  String     @unique
+  password  String
+  playlists Playlist[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
 enum WatchStatus {
-  watching
-  completed
-  planned
-  dropped
-  removed
+  WATCHING
+  COMPLETED
+  PLANNED
+  DROPPED
+  REMOVED
+}
+
+enum Genre {
+  ACTION
+  COMEDY
+  DRAMA
+  FANTASY
+  HORROR
+  ROMANCE
+  SCIFI
+  THRILLER
+  ANIMATION
 }

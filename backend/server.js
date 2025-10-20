@@ -2,7 +2,6 @@ import express from "express";
 import verifyToken from "./middleware/auth.js";     // default import (see auth.js below)
 import jwt from "jsonwebtoken";                     // ✅ use default import
 import showRouter from "./routes/show.js";
-import favoritesRouter from './routes/favorites.js';
 import playlistsRouter from './routes/playlists.js';
 
 const app = express();
@@ -36,7 +35,6 @@ app.get("/private/ping", verifyToken, (req, res) => {
 
 // Protect your shows API
 app.use("/shows", verifyToken, showRouter);
-app.use('/favorites', favoritesRouter);
 app.use('/playlists', playlistsRouter);
 
 

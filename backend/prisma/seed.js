@@ -1,58 +1,95 @@
-import { PrismaClient } from '@prisma/client';
-
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('Seeding the database...');
+  console.log("Seeding database...");
 
-    // Add shows to database
-    const shows = await prisma.show.createMany({
-        data: [
-            {
-                id: 1,
-                title: "Breaking Bad",
-                posterUrl: "https://www.themoviedb.org/t/p/w200/qJxzjUjCpTPvDHldNnlbRC4OqEh.jpg",
-            },
-            {
-                id: 2,
-                title: "The Witcher",
-                posterUrl: "https://www.themoviedb.org/t/p/w200/6UH52Fmau8RPsMAbQbjwN3wJSCj.jpg",
-            },
-            {
-                id: 3,
-                title: "Rick & Morty",
-                posterUrl: "https://www.themoviedb.org/t/p/w200/uGy4DCmM33I7l86W7iCskNkvmLD.jpg",
-            },
-            {
-                id: 4,
-                title: "Avengers Assemble",
-                posterUrl: "https://www.themoviedb.org/t/p/w200/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
-            },
-        ],
-        skipDuplicates: true,
+  // Users to seed
+  const sampleData = [
+    { email: "chrisHouse@example.com", username: "Chris", password: "password123" },
+    { email: "merlingV@example.com", username: "Merling", password: "password123" },
+    { email: "KarlaL@example.com", username: "Karla", password: "password123" },
+    { email: "RafiqS@example.com", username: "Rafiq", password: "password123" },
+];
+
+  // Sample shows
+  const showsData = [
+    {
+      tmdbId: 157336,
+      title: "Interstellar",
+      description:
+        "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+      posterUrl: "https://image.tmdb.org/t/p/w500/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg",
+      releaseYear: 2014,
+      producer: "Christopher Nolan",
+    },
+    {
+      tmdbId: 27205,
+      title: "Inception",
+      description: "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea.",
+      posterUrl: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
+      releaseYear: 2010,
+      producer: "Christopher Nolan",
+    },
+  ];
+
+  for (const data of sampleData) {
+    const user = await prisma.user.upsert({
+      where: { email: data.email },
+      update: {},
+      create: data,
     });
 
-    console.log('Seeded shows successfully.');
+    console.log("User seeded:", user.email);
 
-    // Create a test user and favorite
-    const userId = 'user123';
-
-    await prisma.favorite.create({
-        data: {
-            userId,
-            show: { connect: { id: 1 } },
+    const favorites = await prisma.playlist.upsert({
+      where: {
+        name_ownerId: {
+          name: "Favorites",
+          ownerId: user.id,
         },
+      },
+      update: {},
+      create: {
+        name: "Favorites",
+        isFavorite: true,
+        isPublic: false,
+        ownerId: user.id,
+      },
     });
 
-    console.log(`Example favorite created for user: ${userId}`);
+    console.log("Favorites playlist created for:", user.email);
+
+    for (const showData of showsData) {
+      const show = await prisma.show.upsert({
+        where: { tmdbId: showData.tmdbId },
+        update: {},
+        create: showData,
+      });
+
+      const alreadyConnected = await prisma.playlistShow.findFirst({
+        where: { playlistId: favorites.id, showId: show.id },
+      });
+
+      if (!alreadyConnected) {
+        await prisma.playlistShow.create({
+          data: { playlistId: favorites.id, showId: show.id },
+        });
+      }
+
+      console.log(`Show '${show.title}' added to ${user.username}'s Favorites playlist.`);
+    }
+  }
+
+  console.log("Seeding complete!");
 }
 
 main()
-    .then(() => console.log("Seeding completed successfully!"))
-    .catch((err) => {
-        console.error("Error during seeding:", err);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+  .catch(async (e) => {
+    console.error("Seed error:", e);
+    await prisma.$disconnect();
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
