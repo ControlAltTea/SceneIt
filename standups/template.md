@@ -37,4 +37,4 @@
 ### What are you going to work on?
 
 
-### Any near-future blockers and how can we support you?git
+### Any near-future blockers and how can we support you?
