@@ -1,0 +1,21 @@
+Note-taker: Karla Lewis
+Daily Standup - Tuesday 10.21.25
+Team Member: Karla Lewis
+- What did you work on?
+To understand the submission of each team member submitting a Standup and make
+sure that is published on the right branch via Standups. Also, Still working 
+on the website to make sure the pagination and search query is connected 
+properly.
+
+- What are you going to work on?
+This evening I plan on doing more research and reading because I created a new 
+pull request for the website for the search query to more detailed with 
+genres, years and other association for our profile users to search. I am having
+a really hard time with connecting the frontend with backend of the website.
+
+- Any near-future blockers and how can we support you?
+My plan is to schedule office hours with Tea and Alex so the issues that I was
+assigned could help with my connection with POSTMAN and the search query. I 
+personally have been running into personal issues due to my fiancial situation 
+however, I plan on reaching out to Cynthia, my success specialist for different
+resources. 
