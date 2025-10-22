@@ -1,0 +1,22 @@
+Note-taker: Karla Lewis
+Daily Standup - Wednesday
+Team Member: Karla
+- What did you work on?
+Rafiq: Reading documentation on React and some Prisma 
+Chris: Implemented and tested the /favorites backend route using Express and Prisma.
+Connected the route to the database through Prisma models for Favorite and Show.
+Verified route functionality in Postman
+Karla: For today, I am still having hard time connecting the backend to the fronend in with the search query for my pagination to work. My frontend is working great. However, POSTMAN and I have are not connecting with the actual 20 results per page when a profile user is searching for different tv shows to watch.
+Merling: N/A
+
+- What are you going to work on?
+Rafiq: Hopefully fully understanding of Prisma work so I can do the models 
+Chris: Finalize and test the playlists.js backend route next.
+Write unit tests or integration tests for the favorites routes to confirm consistent behavior across environments.
+
+Any blockers or areas where help is needed:
+Rafiq: Not understanding it in time to finish my task
+Chris: None as of yet
+Karla: Today, I will finish working and solving my issue with my pagination of the search query for my part of the website and I start working on my second issue, which is also connecting the LOFI Figma to to the HIFI Figma for better understanding of the mapping of the webiste. 
+Merling: N/A
+
