@@ -18,13 +18,14 @@
 **Team Member**: 
 
 ### What did you work on?
-Testing frontend with new backend routes.
+- Testing frontend with new backend routes.
 
 ### What are you going to work on?
-Revisiting future tasks involving the prisma models
+- Revisiting future tasks involving the prisma models
 
 ### Any near-future blockers and how can we support you?
-Waiting on my backend branch to be merged to 'dev'
+- Waiting on my backend branch to be merged to 'dev'
+
 --- 
 
 **Note-taker**:
