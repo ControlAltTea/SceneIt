@@ -33,9 +33,19 @@
 **Team Member**: 
 
 ### What did you work on?
+- Revisited backend playlist functionality, including routes for creating playlists, addind/removing media, and retrieving user playlists
+- Refactored Prisma models to use camelCase for consistentcy.
+- Revised `seed.js` for initial data population (users, shows, favorites).
+- Created and tested all playlist endpoints in Postman.
+- Documented API tests with screenshots stored in `backend/docs/test`
+- Submitted and merged PR for backend playlist updates.
 
 
 ### What are you going to work on?
+- Finish frontend integration for playlists and media pages.
+- Sset up API calls to display playlists, movies, and shows pulled from the backend.
+- Implement UI components for "Favorites" and "Watchlist" view.
 
 
 ### Any near-future blockers and how can we support you?
+- None currently, but I will need backend endpoints verified before pushing frontend
