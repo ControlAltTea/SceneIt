@@ -28,16 +28,16 @@
 
 --- 
 
-**Note-taker**:
+**Note-taker**: Chris House
 **Daily Standup** - Wednesday
-**Team Member**: 
+**Team Member**: Chris House
 
 ### What did you work on?
 - Revisited backend playlist functionality, including routes for creating playlists, addind/removing media, and retrieving user playlists
 - Refactored Prisma models to use camelCase for consistentcy.
 - Revised `seed.js` for initial data population (users, shows, favorites).
 - Created and tested all playlist endpoints in Postman.
-- Documented API tests with screenshots stored in `backend/docs/test`
+- Documented API tests with screenshots stored in `backend/docs/tests`
 - Submitted and merged PR for backend playlist updates.
 
 
