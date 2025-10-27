@@ -3,6 +3,7 @@ import verifyToken from "./middleware/auth.js";     // default import (see auth.
 import jwt from "jsonwebtoken";                     // ✅ use default import
 import showRouter from "./routes/show.js";
 import playlistsRouter from './routes/playlists.js';
+import ratingsRouter from './routes/ratings.js';
 
 const app = express();
 app.use(express.json());
@@ -36,6 +37,7 @@ app.get("/private/ping", verifyToken, (req, res) => {
 // Protect your shows API
 app.use("/shows", verifyToken, showRouter);
 app.use('/playlists', playlistsRouter);
+app.use('/ratings', ratingsRouter);
 
 
 const PORT = process.env.PORT || 8080;
