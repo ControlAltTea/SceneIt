@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,24 +16,49 @@ enum WatchStatus {
   removed
 }
 
+enum Genre {
+  ACTION
+  COMEDY
+  DRAMA
+  FANTASY
+  HORROR
+  ROMANCE
+  SCIFI
+  THRILLER
+  ANIMATION
+}
+
+model User {
+  id         String     @id @default(uuid())
+  username   String     @unique
+  playlists  Playlist[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
 model Show {
-  id           BigInt   @id @default(autoincrement())
+  id           String      @id @default(uuid())
   title        String
-  genre        String?
+  year         Int?
+  genres       Genre[]
   description  String?
   producer     String?
   release_year Int?
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
 
-  episodes Episode[]
-  ratings  Rating[]
-  watch    Watchlist[]
+  episodes     Episode[]
+  ratings      Rating[]
+  watch        Watchlist[]
+  playlists    Playlist[]  @relation("PlaylistShows")
+
+  @@index([year])
+  @@index([title])
 }
 
 model Episode {
   id             BigInt    @id @default(autoincrement())
-  show_id        BigInt
+  show_id        String
   season_number  Int       @default(1)
   episode_number Int
   name           String
@@ -49,7 +73,7 @@ model Episode {
 model Rating {
   id         BigInt   @id @default(autoincrement())
   user_id    String
-  show_id    BigInt
+  show_id    String
   score      Int
   review     String?
   created_at DateTime @default(now())
@@ -63,7 +87,7 @@ model Rating {
 model Watchlist {
   id         BigInt      @id @default(autoincrement())
   user_id    String
-  show_id    BigInt
+  show_id    String
   status     WatchStatus @default(planned)
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
@@ -71,4 +95,18 @@ model Watchlist {
   show Show @relation(fields: [show_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, show_id])
+}
+
+model Playlist {
+  id          String     @id @default(uuid())
+  name        String
+  isPublic    Boolean    @default(true)
+  ownerId     String
+  owner       User       @relation(fields: [ownerId], references: [id])
+  shows       Show[]     @relation("PlaylistShows")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([isPublic])
+  @@index([ownerId])
 }
