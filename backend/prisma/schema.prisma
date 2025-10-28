@@ -8,12 +8,126 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model User {
+  username  String      @id
+  email     String      @unique
+  password  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Comment   Comment[]
+  Playlist  Playlist[]
+  Rating    Rating[]
+  Watchlist Watchlist[]
+}
+
+model Episode {
+  mediaTmdbId   Int
+  seasonNumber  Int
+  episodeNumber Int
+  name          String
+  airDate       DateTime?
+  createdAt     DateTime  @default(now())
+  Media         Media     @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+
+  @@id([mediaTmdbId, seasonNumber, episodeNumber])
+}
+
+model Rating {
+  userUsername String
+  mediaTmdbId  Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime
+  id           Int       @id @default(autoincrement())
+  playlistId   Int?
+  rating       Int
+  Media        Media?    @relation(fields: [mediaTmdbId], references: [tmdbId])
+  Playlist     Playlist? @relation(fields: [playlistId], references: [id])
+  User         User      @relation(fields: [userUsername], references: [username])
+
+  @@unique([userUsername, mediaTmdbId])
+  @@unique([userUsername, playlistId])
+  @@index([mediaTmdbId])
+  @@index([playlistId])
+}
+
+model Watchlist {
+  userUsername String
+  mediaTmdbId  Int
+  status       WatchStatus @default(PLANNED)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now())
+  Media        Media       @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+  User         User        @relation(fields: [userUsername], references: [username], onDelete: Cascade)
+
+  @@id([userUsername, mediaTmdbId])
+}
+
+model Playlist {
+  id            Int             @id @default(autoincrement())
+  ownerUsername String
+  name          String
+  isPublic      Boolean         @default(true)
+  isFavorite    Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now()) @updatedAt
+  Comment       Comment[]
+  User          User            @relation(fields: [ownerUsername], references: [username], onDelete: Cascade)
+  PlaylistMedia PlaylistMedia[]
+  Rating        Rating[]
+
+  @@unique([name, ownerUsername])
+}
+
+model Comment {
+  id           Int       @id @default(autoincrement())
+  content      String
+  userUsername String
+  mediaTmdbId  Int?
+  playlistId   Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
+  Media        Media?    @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+  Playlist     Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  User         User      @relation(fields: [userUsername], references: [username], onDelete: Cascade)
+
+  @@index([mediaTmdbId])
+  @@index([playlistId])
+}
+
+model Media {
+  tmdbId        Int             @id
+  title         String
+  type          MediaType       @default(MOVIE)
+  genres        Genre[]
+  description   String?
+  posterUrl     String?
+  producer      String?
+  releaseYear   Int?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  Comment       Comment[]
+  Episode       Episode[]
+  PlaylistMedia PlaylistMedia[]
+  Rating        Rating[]
+  Watchlist     Watchlist[]
+}
+
+model PlaylistMedia {
+  playlistName  String
+  ownerUsername String
+  mediaTmdbId   Int
+  Media         Media    @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+  Playlist      Playlist @relation(fields: [playlistName, ownerUsername], references: [name, ownerUsername], onDelete: Cascade)
+
+  @@id([playlistName, ownerUsername, mediaTmdbId])
+}
+
 enum WatchStatus {
-  watching
-  completed
-  planned
-  dropped
-  removed
+  WATCHING
+  COMPLETED
+  PLANNED
+  DROPPED
+  REMOVED
 }
 
 enum Genre {
@@ -28,85 +142,7 @@ enum Genre {
   ANIMATION
 }
 
-model User {
-  id         String     @id @default(uuid())
-  username   String     @unique
-  playlists  Playlist[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-}
-
-model Show {
-  id           String      @id @default(uuid())
-  title        String
-  year         Int?
-  genres       Genre[]
-  description  String?
-  producer     String?
-  release_year Int?
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
-
-  episodes     Episode[]
-  ratings      Rating[]
-  watch        Watchlist[]
-  playlists    Playlist[]  @relation("PlaylistShows")
-
-  @@index([year])
-  @@index([title])
-}
-
-model Episode {
-  id             BigInt    @id @default(autoincrement())
-  show_id        String
-  season_number  Int       @default(1)
-  episode_number Int
-  name           String
-  air_date       DateTime?
-  created_at     DateTime  @default(now())
-
-  show Show @relation(fields: [show_id], references: [id], onDelete: Cascade)
-
-  @@unique([show_id, season_number, episode_number])
-}
-
-model Rating {
-  id         BigInt   @id @default(autoincrement())
-  user_id    String
-  show_id    String
-  score      Int
-  review     String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  show Show @relation(fields: [show_id], references: [id], onDelete: Cascade)
-
-  @@unique([user_id, show_id])
-}
-
-model Watchlist {
-  id         BigInt      @id @default(autoincrement())
-  user_id    String
-  show_id    String
-  status     WatchStatus @default(planned)
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
-
-  show Show @relation(fields: [show_id], references: [id], onDelete: Cascade)
-
-  @@unique([user_id, show_id])
-}
-
-model Playlist {
-  id          String     @id @default(uuid())
-  name        String
-  isPublic    Boolean    @default(true)
-  ownerId     String
-  owner       User       @relation(fields: [ownerId], references: [id])
-  shows       Show[]     @relation("PlaylistShows")
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-
-  @@index([isPublic])
-  @@index([ownerId])
+enum MediaType {
+  MOVIE
+  TV
 }

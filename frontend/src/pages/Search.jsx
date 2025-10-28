@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ShowCard from "../components/ShowCard";
 
+const GENRES = ["ACTION","COMEDY","DRAMA","FANTASY","HORROR","ROMANCE","SCIFI","THRILLER","ANIMATION"];
+
 const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"; // need to move later
 
 const Search = () => {
@@ -51,6 +53,51 @@ const Search = () => {
         {results.map((show) => (
           <ShowCard key={show.id} show={show} />
         ))}
+        {/* Filters Section */}
+<div className="grid gap-3 md:grid-cols-5">
+  <input
+    className="border rounded px-3 py-2"
+    placeholder="Search by title…"
+    value={q}
+    onChange={(e) => updateParam("q", e.target.value)}
+  />
+
+  <select
+    className="border rounded px-3 py-2"
+    value={genre}
+    onChange={(e) => updateParam("genre", e.target.value)}
+  >
+    <option value="">Genre (any)</option>
+    {GENRES.map((g) => (
+      <option key={g} value={g}>{g}</option>
+    ))}
+  </select>
+
+  <input
+    className="border rounded px-3 py-2"
+    type="number"
+    placeholder="Year"
+    value={year}
+    onChange={(e) => updateParam("year", e.target.value)}
+  />
+
+  <input
+    className="border rounded px-3 py-2"
+    placeholder="Username"
+    value={username}
+    onChange={(e) => updateParam("username", e.target.value)}
+  />
+
+  <label className="inline-flex items-center gap-2">
+    <input
+      type="checkbox"
+      checked={inPublicPlaylists === "true"}
+      onChange={(e) => updateParam("inPublicPlaylists", e.target.checked ? "true" : "")}
+    />
+    <span>Public Playlists</span>
+  </label>
+</div>
+
       </div>
     </div>
     </div>
