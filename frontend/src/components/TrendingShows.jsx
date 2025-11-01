@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ShowCard from "./ShowCard";
 
-const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"; 
+const API_KEY = "0682a4928132745b1b008a4f2d1c6d53"; 
 const TRENDING_URL = `https://api.themoviedb.org/3/trending/tv/week?api_key=${API_KEY}`;
 
 export default function TrendingShows() {
