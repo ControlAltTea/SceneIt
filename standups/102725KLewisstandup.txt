@@ -1,0 +1,21 @@
+Notetaker: Karla Lewis 
+Daily Standup 10.27.25
+Team Member: Karla Lewis 
+- What did you work on?
+Over the weekend, I was working alot on my past due assignments for our career readiness part of our program with 
+The Knowledge House. I was updating my resume and getting better with working with Prentus so I can make an 
+appointment with Valtika. Also, I did more research on my search query issue so it would be accessible and we can 
+close that pull request. 
+- What are you going to work on?
+Today, I plan on assisting the team in way that I can. Chris has been working a lot on the backend of the 
+playlist enhancement and I was able to figure out the pagination when the search query is used and it only 
+has 20 results per page. Now, I want to attack the pull request that I currently have pending finalize the 
+feature of search results of the genres and years. If I can finally figure that out, I plan attacking another issue
+that our team currrently listed to enhance our web page.
+
+- Any near-future blockers and how can we support you?
+My current blockers is personal with the issues that I am currently having with my son being bullied and 
+transitioning to another school. Also, I do have some financial woes at the moment but I am doing my best to get 
+out of this bad time. I also do plan on getting on Alex or Tea's schedule to help me with explaining in more lament 
+terms how to be a better teammate and how to feel more confident in an interview setting for a future career 
+in web development. 

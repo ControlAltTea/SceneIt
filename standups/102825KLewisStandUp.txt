@@ -1,0 +1,19 @@
+Note-taker: Karla Lewis 
+Daily Standup - Tuesday 10.28.2025
+Team Member: 
+- What did you work on?
+I was working on the issue I was assigned with search query with a better search results and 
+when the testing is done that you see the results properly. 
+
+- What are you going to work on?
+My plan is to officially finish the issue #11 that I assigned myself and make sure the search
+query can see the results correctly when browse the page. I also will ask that one of my team 
+mates can review my changes and approve my pull request. Chris and I spoke and he came up 
+with smart idea about some of the tasks that we have already assigned ourselves and to make
+sure we are not doing to much of the same thing. 
+
+- Any near-future blockers and how can we support you?
+The current blockers I have is that I have been working more hours with my current full time 
+job so I tend to get really tired and I haven't looked into a side hustle to step my personal
+issues with in my household. However, I am will not let this not be accessible and do my part 
+for the team. 
