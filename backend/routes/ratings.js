@@ -5,7 +5,6 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 
-/// POST /ratings
 /// Create or update a user's rating for a media item or playlist.
 /// Frontend div inside of thestar component will send `rating` (1–5) and either mediaTmdbId or playlistId.
 
@@ -24,9 +23,11 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Rating must be between 1 and 5." });
     }
 
+    let savedRating;
+
     // Rating a movie or show
     if (mediaTmdbId) {
-      rating = await prisma.rating.upsert({
+      savedRating = await prisma.rating.upsert({
         where: {
           userUsername_mediaTmdbId: {
             userUsername: username,
@@ -44,14 +45,14 @@ router.post("/", async (req, res) => {
 
     /// Rating a playlist
     if (playlistId) {
-      rating = await prisma.rating.upsert({
+      savedRating = await prisma.rating.upsert({
         where: {
           userUsername_playlistId: {
             userUsername: username,
             playlistId,
           },
         },
-        update: { rating },
+        update: { rating: rating },
         create: {
           userUsername: username,
           playlistId,
@@ -68,7 +69,6 @@ router.post("/", async (req, res) => {
 });
 
 
-/// GET /ratings/media/:tmdbId
 /// Get all ratings for a specific media item
 
 router.get("/media/:tmdbId", async (req, res) => {

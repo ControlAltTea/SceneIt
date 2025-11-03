@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";                     // ✅ use default import
 import showRouter from "./routes/show.js";
 import playlistsRouter from './routes/playlists.js';
 import ratingsRouter from './routes/ratings.js';
+import commentsRouter from './routes/comments.js';
 
 const app = express();
 app.use(express.json());
@@ -38,6 +39,7 @@ app.get("/private/ping", verifyToken, (req, res) => {
 app.use("/shows", verifyToken, showRouter);
 app.use('/playlists', playlistsRouter);
 app.use('/ratings', ratingsRouter);
+app.use('/comments', commentsRouter)
 
 
 const PORT = process.env.PORT || 8080;
