@@ -14,10 +14,11 @@ model User {
   email     String      @unique
   password  String
   playlists Playlist[]
-  ratings   Rating[]
   watchlist Watchlist[]
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  comment   Comment[]
+  rating    Rating[]
 }
 
 /// Unified model for both Movies and TV Shows
@@ -34,8 +35,9 @@ model Media {
   updatedAt     DateTime        @default(now()) @updatedAt
   episodes      Episode[]
   playlistMedia PlaylistMedia[]
-  ratings       Rating[]
+  rating        Rating[]
   watchlist     Watchlist[]
+  comment       Comment[]
 }
 
 /// Episodes reference a Media item by TMDB ID (only used for TV series)
@@ -50,21 +52,6 @@ model Episode {
   media Media @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
 
   @@id([mediaTmdbId, seasonNumber, episodeNumber])
-}
-
-/// Ratings link users to media
-model Rating {
-  userUsername String
-  mediaTmdbId  Int
-  score        Int
-  review       String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now()) @updatedAt
-
-  user  User  @relation(fields: [userUsername], references: [username], onDelete: Cascade)
-  media Media @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
-
-  @@id([userUsername, mediaTmdbId])
 }
 
 /// Each watchlist entry links one user ↔ one media item
@@ -92,7 +79,9 @@ model Playlist {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now()) @updatedAt
 
-  owner User @relation(fields: [ownerUsername], references: [username], onDelete: Cascade)
+  owner   User      @relation(fields: [ownerUsername], references: [username], onDelete: Cascade)
+  comment Comment[]
+  rating  Rating[]
 
   @@unique([name, ownerUsername]) // keep this unique to prevent duplicates
 }
@@ -102,9 +91,48 @@ model PlaylistMedia {
   playlistName  String
   ownerUsername String
   mediaTmdbId   Int
-  playlist Playlist @relation(fields: [playlistName, ownerUsername], references: [name, ownerUsername], onDelete: Cascade)
-  media    Media    @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+  playlist      Playlist @relation(fields: [playlistName, ownerUsername], references: [name, ownerUsername], onDelete: Cascade)
+  media         Media    @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+
   @@id([playlistName, ownerUsername, mediaTmdbId])
+}
+
+/// Comments can belong to either a Media item or a Playlist
+model Comment {
+  id           Int      @id @default(autoincrement())
+  content      String
+  userUsername String
+  mediaTmdbId  Int? // optional if comment is on a playlist
+  playlistId   Int? // optional if comment is on a playlist
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  user     User      @relation(fields: [userUsername], references: [username], onDelete: Cascade)
+  media    Media?    @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+  playlist Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+
+  @@index([mediaTmdbId])
+  @@index([playlistId])
+}
+
+/// Ratings can be attached to movie/tv-shows or a playlist created by a user
+model Rating {
+  id           Int      @id @default(autoincrement())
+  rating       Int
+  userUsername String
+  mediaTmdbId  Int?
+  playlistId   Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user     User      @relation(fields: [userUsername], references: [username])
+  playlist Playlist? @relation(fields: [playlistId], references: [id])
+  media    Media?    @relation(fields: [mediaTmdbId], references: [tmdbId])
+
+  @@unique([userUsername, mediaTmdbId])
+  @@unique([userUsername, playlistId])
+  @@index([mediaTmdbId])
+  @@index([playlistId])
 }
 
 /// Enums
