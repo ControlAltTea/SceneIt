@@ -1,0 +1,17 @@
+Note-taker: Karla Lewis 
+Daily Standup - Monday 11.03.2025
+Team Member: Karla Lewis 
+- What did you work on?
+I was able to link the tv show API from TMBD.com with the updated features and push it to the develop branch. I 
+reached out to the team and ask if someone could review and approve it. I was able to test it and got it to work. 
+
+- What are you going to work on?
+Due to a team member leaving the program, I plan on working on one of the issues that was listed and assigned by 
+that team member so we can have extra features and enhancements to the page. 
+
+- Any near-future blockers and how can we support you?
+I currently run into personal issues with my daughter being sick and was admitted to the emergency room. Also, I am
+doing my best to get my son settled at his new school. WE are trying to get his bus schedule settle and I am doing 
+my best to find the funds to buy him a whole new uniform/wardrobe. Despite everything, I plan on just reaching out 
+Tea and/or Alex because I do want to build my confidence within my interviewing skills level and also more 
+comfortable with working on the assignment and pushing it to the develop branch properly. 
