@@ -7,13 +7,16 @@ const SearchBar = ({ placeholder = "Search for shows..." }) => {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
+    //update this to display data found based on user input 
     e.preventDefault();
+
     if (!query.trim()) return;
     // Navigate to the /search page with query in the URL
+    // find end point that is made for searching by name, actor, or genre 
     navigate(`/search?query=${encodeURIComponent(query.trim())}`);
     setQuery(""); // optional: clear after search
   };
-
+  
   return (
     <form
       onSubmit={handleSubmit}

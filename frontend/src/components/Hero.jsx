@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import RegisterModal from "./Register";
 import ShowCard from "./ShowCard"; // ✅ import your ShowCard
-
+import FeaturedShows from "./PopularShows";
 
 // ⚡️ Replace with your TMDB API key
-const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"
+const API_KEY ="682a4928132745b1b008a4f2d1c6d53"
 
 export default function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,25 +14,25 @@ export default function Hero() {
   const handleGetStarted = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  useEffect(() => {
-    const fetchFeatured = async () => {
-      setLoading(true);
-      try {
-        // Example: Fetch "popular" TV shows
-        const res = await fetch(
-          `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=1`
-        );
-        const data = await res.json();
-        setFeatured(data.results.slice(0, 6)); // grab just a few for hero
-      } catch (err) {
-        console.error("Error fetching featured shows:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchFeatured = async () => {
+  //     setLoading(true);
+  //     try {
+  //       // Example: Fetch "popular" TV shows
+  //       const res = await fetch(
+  //         `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=1`
+  //       );
+  //       const data = await res.json();
+  //       setFeatured(data.results.slice(0, 6)); // grab just a few for hero
+  //     } catch (err) {
+  //       console.error("Error fetching featured shows:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchFeatured();
-  }, []);
+  //   fetchFeatured();
+  // }, []);
 
   return (
     <section className="relative w-full bg-[#023047] flex flex-col items-center py-20 gap-12">
@@ -59,8 +59,8 @@ export default function Hero() {
       >
         Get started
       </button>
-
-      {/* Featured Shows */}
+<FeaturedShows/>
+      {/* Featured Shows
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {loading && <p className="text-gray-400">Loading featured shows...</p>}
 
@@ -73,7 +73,7 @@ export default function Hero() {
         ) : (
           !loading && <p className="text-gray-500">No featured shows found.</p>
         )}
-      </div>
+      </div> */}
 
 
 
