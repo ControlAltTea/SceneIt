@@ -1,0 +1,34 @@
+Merling - Note-taker:
+Daily Standup - Monday
+Team Member: 
+- What did you work on?
+Finalized figma file for frontend of profile.
+
+- What are you going to work on?
+Reinstalling project dependencies and troubleshooting with team due to errors in connecting to remote repo.
+
+- Any near-future blockers and how can we support you?
+Reviewing information on different branches. 
+
+
+Daily Standup - Tuesday
+- What did you work on?
+Setup new repo to connect to remote, shared challenge with running npm command in terminal.
+
+- What are you going to work on?
+Minimizing routes and expanding project idea to pull specific data with API.
+
+- Any near-future blockers and how can we support you?
+Pulling routes correctly to display on profile page.
+
+Note-taker:
+Daily Standup - Wednesday
+Team Member: 
+- What did you work on?
+Reviewing prisma schema with teammate Chris to confirm before PR and tested routes with postman. Presented to team next steps for frontend work to consolidate tasks.
+
+- What are you going to work on?
+Creating profile routes from Chris data, playlist, favorite, and review.
+
+- Any near-future blockers and how can we support you?
+Renaming routes due to teammate using different tag names, will check in via slack before pushing changes.
