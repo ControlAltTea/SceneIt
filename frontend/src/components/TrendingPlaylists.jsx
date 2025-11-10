@@ -74,7 +74,7 @@ export default function TrendingPlaylists() {
     };
 
     return (
-        <div className="bg-primary py-12 h-screen">
+        <div className="py-12 h-screen">
             {/* Title */}
             <div className="w-full max-w-6xl mx-auto text-center">
                 <h2 className="text-2xl md:text-3xl font-semibold text-gray-200">

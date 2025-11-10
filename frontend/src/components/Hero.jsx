@@ -35,7 +35,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full bg-[#023047] flex flex-col items-center py-20 gap-12">
+    <section className="relative w-full flex flex-col items-center py-44 gap-12">
       {/* Tagline */}
       <h2 className="text-center text-lg md:text-4xl text-gray-300 max-w-lg leading-relaxed">
         <p>
