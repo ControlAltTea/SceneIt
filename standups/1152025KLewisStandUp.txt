@@ -1,0 +1,20 @@
+
+Note-taker: Karla Lewis
+Daily Standup - Wednesday 11.5.2025
+Team Member: Karla Lewis, Chris House, Merling Vasquez
+- What did you work on?
+We had communication with the group today and found out how to work smarter 
+not harder. I personally pushed the work that I did on the sprint 1 for 
+the search query to the dev branch. 
+
+- What are you going to work on?
+I plan on continuing to communicating with my team and enhance the search query
+on the website and make sure that the backend (all the work that Chris did) connects
+with the frontend work that I did for our website.
+
+- Any near-future blockers and how can we support you?
+Moving on going forward, we are well aware of my personal situations. However, my 
+current blocker is doing my best to bring up my grade in the career readiness
+part of this program. I feel so thankful to have the professors, teacher 
+assistants and the student success specialist to help throughout my journey
+here at TKH. 
