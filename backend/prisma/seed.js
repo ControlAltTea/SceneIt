@@ -4,16 +4,16 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database...");
 
-  // Users to seed
-  const sampleData = [
+  /// Creating users to test routes with
+  const sampleUsers = [
     { email: "chrisHouse@example.com", username: "Chris", password: "password123" },
     { email: "merlingV@example.com", username: "Merling", password: "password123" },
     { email: "KarlaL@example.com", username: "Karla", password: "password123" },
     { email: "RafiqS@example.com", username: "Rafiq", password: "password123" },
-];
+  ];
 
-  // Sample shows
-  const showsData = [
+  /// Sample movies
+  const mediaData = [
     {
       tmdbId: 157336,
       title: "Interstellar",
@@ -26,58 +26,65 @@ async function main() {
     {
       tmdbId: 27205,
       title: "Inception",
-      description: "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea.",
+      description:
+        "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea.",
       posterUrl: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
       releaseYear: 2010,
       producer: "Christopher Nolan",
     },
   ];
 
-  for (const data of sampleData) {
+  for (const userData of sampleUsers) {
+    /// Upsert users to db
     const user = await prisma.user.upsert({
-      where: { email: data.email },
+      where: { email: userData.email },
       update: {},
-      create: data,
+      create: userData,
     });
+    console.log(`User seeded: ${user.username}`);
 
-    console.log("User seeded:", user.email);
-
+    /// Upsert favorite playlists for eery user
     const favorites = await prisma.playlist.upsert({
-      where: {
-        name_ownerId: {
-          name: "Favorites",
-          ownerId: user.id,
-        },
-      },
+      where: { name_ownerUsername: { name: "Favorites", ownerUsername: user.username } },
       update: {},
       create: {
         name: "Favorites",
         isFavorite: true,
         isPublic: false,
-        ownerId: user.id,
+        ownerUsername: user.username,
       },
     });
+    console.log(`Favorites playlist created for: ${user.username}`);
 
-    console.log("Favorites playlist created for:", user.email);
-
-    for (const showData of showsData) {
-      const show = await prisma.show.upsert({
-        where: { tmdbId: showData.tmdbId },
+    /// Upsert media & connect them to Favorites playlist
+    for (const m of mediaData) {
+      const media = await prisma.media.upsert({
+        where: { tmdbId: m.tmdbId },
         update: {},
-        create: showData,
+        create: m,
       });
 
-      const alreadyConnected = await prisma.playlistShow.findFirst({
-        where: { playlistId: favorites.id, showId: show.id },
+      /// Connect media to playlist if not already connected
+      const existingConnection = await prisma.playlistMedia.findUnique({
+        where: {
+          playlistName_ownerUsername_mediaTmdbId: {
+            playlistName: favorites.name,
+            ownerUsername: favorites.ownerUsername,
+            mediaTmdbId: media.tmdbId,
+          },
+        },
       });
 
-      if (!alreadyConnected) {
-        await prisma.playlistShow.create({
-          data: { playlistId: favorites.id, showId: show.id },
+      if (!existingConnection) {
+        await prisma.playlistMedia.create({
+          data: {
+            playlistName: favorites.name,
+            ownerUsername: favorites.ownerUsername,
+            mediaTmdbId: media.tmdbId,
+          },
         });
+        console.log(`'${media.title}' added to ${user.username}'s Favorites.`);
       }
-
-      console.log(`Show '${show.title}' added to ${user.username}'s Favorites playlist.`);
     }
   }
 
@@ -85,8 +92,8 @@ async function main() {
 }
 
 main()
-  .catch(async (e) => {
-    console.error("Seed error:", e);
+  .catch(async (error) => {
+    console.error("Seed error:", error);
     await prisma.$disconnect();
     process.exit(1);
   })
