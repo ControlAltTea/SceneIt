@@ -1,85 +1,168 @@
+// server.js
 import express from "express";
 import cors from "cors";
-import { PrismaClient, Genre } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
-const prisma = new PrismaClient();
 const app = express();
+const prisma = new PrismaClient();
+const PORT = process.env.PORT || 8080;
+
 app.use(cors());
 app.use(express.json());
 
-// ✅ SEARCH ENDPOINT
+/**
+ * GET /api/search
+ * Query params:
+ *  q, genre, year, username, inPublicPlaylists=('true'|''),
+ *  limit=20, offset=0
+ *
+ * Returns: { items: Array<MediaLike>, total: number }
+ */
 app.get("/api/search", async (req, res) => {
   try {
-    const { q, genre, year, username, inPublicPlaylists, page = 1 } = req.query;
-    const PAGE_SIZE = 20;
-    const skip = (page - 1) * PAGE_SIZE;
+    const {
+      q = "",
+      genre,
+      year,
+      username,
+      inPublicPlaylists = "true",
+      limit = "20",
+      offset = "0",
+    } = req.query;
 
-    const where = {};
+    // ---- Build 'where' for Media ----
+    const where = { AND: [] };
 
-    // Text search (title)
-    if (q?.trim()) {
-      where.title = { contains: q.trim(), mode: "insensitive" };
+    // Title search
+    if (q && String(q).trim()) {
+      where.AND.push({
+        title: { contains: String(q).trim(), mode: "insensitive" },
+      });
     }
 
     // Genre (enum)
-    if (genre && Object.values(Genre).includes(genre)) {
-      where.genres = { has: genre };
+    if (genre && String(genre).trim()) {
+      const g = String(genre).trim().toUpperCase();
+      const validGenres = Object.values(Prisma.Genre || {});
+      if (validGenres.includes(g)) {
+        // Media.genres is enum[]
+        where.AND.push({ genres: { has: g } });
+      } else {
+        return res.status(400).json({ error: `Invalid genre: ${genre}` });
+      }
     }
 
     // Year
-    if (year && !isNaN(Number(year))) {
-      where.year = Number(year);
+    if (year && !Number.isNaN(Number(year))) {
+      where.AND.push({ releaseYear: Number(year) });
     }
 
-    // Username & Public Playlists
-    if (username || inPublicPlaylists === "true") {
-      const playlistFilters = [];
+    // Playlist + owner filters go through the join table PlaylistMedia
+    const needPlaylistFilter =
+      inPublicPlaylists === "true" || (username && String(username).trim());
 
-      if (username?.trim()) {
-        playlistFilters.push({
-          playlist: {
-            owner: { username: { equals: username.trim(), mode: "insensitive" } },
+    if (needPlaylistFilter) {
+      const andPM = [];
+      if (inPublicPlaylists === "true") {
+        andPM.push({ Playlist: { isPublic: true } });
+      }
+      if (username && String(username).trim()) {
+        andPM.push({
+          Playlist: {
+            ownerUsername: {
+              equals: String(username).trim(),
+              mode: "insensitive",
+            },
           },
         });
       }
 
-      if (inPublicPlaylists === "true") {
-        playlistFilters.push({ playlist: { isPublic: true } });
-      }
-
-      if (playlistFilters.length > 0) {
-        where.playlists = { some: { AND: playlistFilters } };
-      }
+      // Media where exists PlaylistMedia that matches all AND conditions
+      where.AND.push({
+        PlaylistMedia: {
+          some: { AND: andPM },
+        },
+      });
     }
 
-    // Query DB
-    const [items, total] = await Promise.all([
-      prisma.show.findMany({
+    // If AND is empty, delete it (Prisma is fine either way)
+    if (where.AND.length === 0) delete where.AND;
+
+    const take = Math.max(1, Math.min(100, Number(limit) || 20));
+    const skip = Math.max(0, Number(offset) || 0);
+
+    // ---- Query DB ----
+    const [rows, total] = await Promise.all([
+      prisma.media.findMany({
         where,
+        skip,
+        take,
+        orderBy: { createdAt: "desc" }, // you can change to updatedAt if desired
         include: {
-          playlists: {
-            include: { owner: true },
+          // Pull playlists via join table so we can show public playlists & owners
+          PlaylistMedia: {
+            include: {
+              Playlist: {
+                include: {
+                  User: true, // to access User fields if you need more than username
+                },
+              },
+            },
+            // optional per-relation filter (mirrors the global one for safety)
+            where: needPlaylistFilter
+              ? {
+                  AND: [
+                    ...(inPublicPlaylists === "true" ? [{ Playlist: { isPublic: true } }] : []),
+                    ...(username && String(username).trim()
+                      ? [
+                          {
+                            Playlist: {
+                              ownerUsername: {
+                                equals: String(username).trim(),
+                                mode: "insensitive",
+                              },
+                            },
+                          },
+                        ]
+                      : []),
+                  ],
+                }
+              : undefined,
           },
         },
-        skip,
-        take: PAGE_SIZE,
       }),
-      prisma.show.count({ where }),
+      prisma.media.count({ where }),
     ]);
 
-    res.json({
-      items,
-      total,
-      page: Number(page),
-      pageSize: PAGE_SIZE,
-      pageCount: Math.ceil(total / PAGE_SIZE),
-    });
+    // ---- Shape response for your frontend ----
+    const items = rows.map((m) => ({
+      id: m.tmdbId,
+      tmdbId: m.tmdbId,
+      title: m.title,
+      year: m.releaseYear,
+      genres: m.genres,
+      description: m.description,
+      posterUrl: m.posterUrl,
+      // convert join rows to a simple playlists array
+      playlists: (m.PlaylistMedia || [])
+        .filter((pm) => pm?.Playlist)
+        .map((pm) => ({
+          id: pm.Playlist.id,
+          name: pm.Playlist.name,
+          isPublic: pm.Playlist.isPublic,
+          owner: {
+            username: pm.Playlist.ownerUsername,
+            // email: pm.Playlist.User?.email, // available if you need
+          },
+        })),
+    }));
+
+    res.json({ items, total });
   } catch (err) {
-    console.error("Search error:", err);
-    res.status(500).json({ error: "Server error during search" });
+    console.error("/api/search failed:", err);
+    res.status(500).json({ error: "Search failed", details: String(err?.message || err) });
   }
 });
 
-// ✅ Start Server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`✅ Backend running on port ${PORT}`));
+app.get("/", (_req, res) => res.send("Scene It backend OK"));
+app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
