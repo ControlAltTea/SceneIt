@@ -33,5 +33,3 @@ const SearchBar = ({ placeholder = "Search for shows..." }) => {
     </form>
   );
 };
-
-export default SearchBar;
