@@ -3,6 +3,14 @@ import { useLocation } from "react-router-dom";
 import ShowCard from "../components/ShowCard";
 
 const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"; // need to move later
+// TODO:
+// FIX API_KEY TO AT LEAST FUNCTION WHEN SEARCHING FOR TITLES
+// THEN CREATE COMPONENT FOR CATEGORY FILTERING, STARTING WITH GENRE
+// USE: https://developer.themoviedb.org/reference/genre-tv-list
+// CLICK COMPONENT TO REVEAL CATEGORY OPTIONS
+// EXAMPLE: CLICKING GENRE DISPLAYS 'COMEDY', 'ACTION & ADVENTURE'
+          // THEN TLICKING COMEDY FITLER ALL THE COMEDY TV SHOWS AVAILABLE
+// Change 'results' object to store the filtered data
 
 const Search = () => {
   const location = useLocation();
