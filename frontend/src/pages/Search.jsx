@@ -8,9 +8,9 @@ const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"; // need to move later
 // 2. CREATE COMPONENT FOR CATEGORY FILTERING, STARTING WITH A GENRE BUTTON
 // 3. RENDERING ON THE SEARCH PAGE
   //  USE: https://developer.themoviedb.org/reference/genre-tv-list TO REQUEST THE AVAILABLE GENRES
-// 3. CLICK GENRE BUTTON COMPONENT TO REVEAL CATEGORY OPTIONS
-// 4. EXAMPLE: CLICKING GENRE DISPLAYS 'COMEDY', 'ACTION & ADVENTURE'
- // 5. CLICKING COMEDY FITLER ALL THE COMEDY TV SHOWS AVAILABLE UNDER THE 'COMEDY' GENRE
+// 4. CLICK GENRE BUTTON COMPONENT TO REVEAL CATEGORY OPTIONS
+// 5. EXAMPLE: CLICKING GENRE DISPLAYS 'COMEDY', 'ACTION & ADVENTURE'
+ // 6. CLICKING COMEDY FITLER ALL THE COMEDY TV SHOWS AVAILABLE UNDER THE 'COMEDY' GENRE
 // Change 'results' object to store the filtered data
 
 const Search = () => {
@@ -25,7 +25,7 @@ const Search = () => {
     const fetchResults = async () => {
       setLoading(true);
       try {
-        const res = await fetch(
+        const res = await (
           `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(
             query
           )}&api_key=${API_KEY}&language=en-US&page=1`
