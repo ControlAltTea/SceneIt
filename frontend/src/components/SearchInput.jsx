@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 
-const SearchBar = ({ placeholder = "Search for shows..." }) => {
+export default function SearchInput({ placeholder = "Search for shows..." }) {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ const SearchBar = ({ placeholder = "Search for shows..." }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative flex items-center w-full max-w-md"
+      className="relative flex items-center w-full max-w-md ease-in-out cursor-pointer"
     >
       <Search className="absolute left-3 text-gray-400 w-5 h-5 pointer-events-none" />
       <input
@@ -25,10 +25,8 @@ const SearchBar = ({ placeholder = "Search for shows..." }) => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className="bg-primary border text-white placeholder-gray-300 rounded-full px-4 py-2 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
+        className="bg-primary border text-gray/400 placeholder-gray-400/90 rounded-full px-4 py-2 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-200"
       />
     </form>
   );
 };
-
-export default SearchBar;

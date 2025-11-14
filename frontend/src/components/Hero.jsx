@@ -4,7 +4,7 @@ import ShowCard from "./ShowCard"; // ✅ import your ShowCard
 
 
 // ⚡️ Replace with your TMDB API key
-const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export default function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function Hero() {
           `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=1`
         );
         const data = await res.json();
-        setFeatured(data.results.slice(0, 6)); // grab just a few for hero
+        setFeatured(data.results.slice(3, 9)); // grab just a few for hero
       } catch (err) {
         console.error("Error fetching featured shows:", err);
       } finally {
@@ -39,22 +39,22 @@ export default function Hero() {
       {/* Tagline */}
       <h2 className="text-center text-lg md:text-4xl text-gray-300 max-w-lg leading-relaxed">
         <p>
-          <span className="text-center text-secondary font-bold">Watch</span> your
+          <span className="text-center text-green-600 font-bold">Watch</span> your
           favorite shows.
         </p>
         <p>
-          <span className="text-center text-secondary font-bold">Share</span> your
+          <span className="text-center text-green-600 font-bold">Share</span> your
           ratings.
         </p>
         <p>
-          <span className="text-center text-secondary font-bold">Connect</span> with fans
+          <span className="text-center text-green-600 font-bold">Connect</span> with fans
           just like you.
         </p>
       </h2>
 
       {/* Get Started Button */}
       <button
-        className="scale-125 mt-4 px-6 py-2 bg-secondary text-white rounded-lg hover:bg-orange-500 hover:scale-150 transition"
+        className="mt-4 px-6 py-2 bg-green-600 text-gray-300 hover:text-white rounded-md border-4 border-gray-300/30 hover:bg-green-500 active:scale-90 transition-all duration-300"
         onClick={handleGetStarted}
       >
         Get started
