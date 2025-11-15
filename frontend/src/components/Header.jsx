@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from 'axios';
-import { motion } from "motion/react";
 import { TextSearch } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import SearchInput from './SearchInput';
-import { X, Heart } from "lucide-react";
 import SearchSidebar from "./SearchSidebar";
 
 
@@ -27,7 +23,7 @@ export default function Header() {
       <header
         id="header"
         className={`min-w-md fixed top-0 left-0 right-0 z-50 transition-[width,margin,padding,transform,background-color,border-radius] duration-700 ease-in-out ${isScrolled
-          ? "w-[92%] bg-[#05000c] text-gray-100 mt-6 px-10 py-6 shadow-[0px_0px_18px_2px_rgba(255,255,255,0.5)] rounded-2xl border-3 border-white/30 mx-auto"
+          ? "w-[92%] bg-[#05000c] text-gray-100 mt-6 px-10 py-6 shadow-[0px_4px_18px_2px_rgba(22,163,74,0.8)] rounded-2xl border-3 border-white/30 mx-auto"
           : "w-full backdrop-blur-sm text-gray-900 py-8 px-20 bg-transparent"
           }`}
       >
@@ -46,24 +42,19 @@ export default function Header() {
               }`}
           >
             <ul className="flex space-x-8 items-center text-gray-700 dark:text-gray-300 transition-all duration-200">
-              <NavLink to='/login'>
+              <NavLink to='/login' className='font-semibold text-lg cursor-pointer hover:underline'>
                 <li>
-                  <a className="font-semibold text-lg cursor-pointer hover:underline">
-                    Login
-                  </a>
+                  Login
                 </li>
-
               </NavLink>
+              <NavLink to='/shows' className='font-semibold text-lg cursor-pointer hover:underline'>
                 <li>
-                  <a className="font-semibold text-lg cursor-pointer hover:underline">
-                    Shows
-                  </a>
+                  Shows
                 </li>
-              <NavLink>
+              </NavLink>
+              <NavLink to='/playlist' className='font-semibold text-lg cursor-pointer hover:underline'>
                 <li>
-                  <a className="font-semibold text-lg cursor-pointer hover:underline">
-                    Playlist
-                  </a>
+                  Playlist
                 </li>
               </NavLink>
               <li>
