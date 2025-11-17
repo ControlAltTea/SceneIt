@@ -1,93 +1,83 @@
 **Note-taker**: Chris House
-**Daily Standup** - Monday
+**Daily Standup** - Monday (11/10)
 **Team Member**: Chris House
 
 ### What did you work on?
-- Reviewed and debugged `ratings.js`.
-- Identified Prisma `upsert` issues for media and playlist ratings.
-- Prepared Postman test data (user "Chris", media `tmdbId: 157336`).
+- implemented backend routed `/auth/signup` and `/auth/login`
+- Restyled and created components on the frontend `AuthPage.jxx` `SearchSidebar.jsx`
 
 ### What are you going to work on?
-- Test ratings routes in Postman (media & playlist CRUD).
+- Continue finishing backend routes
 
 ### Any near-future blockers and how can we support you?
-- Confirm database has seeded user "Chris" and sample media/playlist data.
+- No
 
 --- 
 
 **Note-taker**:
-**Daily Standup** - Tuesday
+**Daily Standup** - Tuesday (11/11)
 **Team Member**: 
 
 ### What did you work on?
-- Tested `/ratings` routes: create, read, update, delete.
-- Resolved HTTP/HTTPS issue in Postman.
+- Investigated Postman Desktop Agent issue and removed all cached/old instances of Postman from macOS.
 
 ### What are you going to work on?
-- Begin designing `/comments` route for media & playlists.
-- Define Prisma `Comment` model.
+- Use Thunder Client in VS Code to test backend routes reliably.
 
 ### Any near-future blockers and how can we support you?
-- Ensure Prisma schema matches intended relationships (User, Media, Playlist, Comment).
+- Need a stable API testing tool to continue connecting frontend and backend.
 
 
 --- 
 
 **Note-taker**: Chris House
-**Daily Standup** - Wednesday
+**Daily Standup** - Wednesday (11/12)
 **Team Member**: Chris House
 
 ### What did you work on?
-- Implemented `/comments` route with full CRUD operations.
-- Integrated `Comment` model with cascade deletes and indexes.
-- Updated `server.js` to register `/comments` route.
+- Installed and configured Thunder Client in VS Code.
+
+- Successfully tested /auth/signup and /auth/login routes via Thunder Client.
+
+- Debugged JWT responses and confirmed user login/signup flows.
 
 
 ### What are you going to work on?
-- Test `/comments` routes in Postman.
-- Validate relationships between comments, users, media, and playlists.
+- Connect frontend AuthPage forms to backend routes using fetch.
 
+- Ensure token and user info are stored in localStorage for persistent login state.
 
 
 ### Any near-future blockers and how can we support you?
-- Ensure cascade deletes work correctly without affecting unrelated data.
+- No
 
 **Note-taker**: Chris House
-**Daily Standup** - Saturday
+**Daily Standup** - Thursday (11/13)
 **Team Member**: Chris House
 
 ### What did you work on?
-- Performed end-to-end Postman testing of `/comments` routes.
-- Updated `/ratings` and `/comments` PR messages and commit description.
-- Verified documentation and code style.
-
+- Added Sidebar component and refactored SearchInput logic into Sidebar for better modularity.
+- Applied frontend visual/styling improvements to forms, header, sidebar, and cards for better user experience.
 
 
 ### What are you going to work on?
-- Push feature branch to GitHub and prepare PR.
-- Address any merge conflicts.
-
+- Resolving Errors from frontend login integration
 
 ### Any near-future blockers and how can we support you?
-- Awaiting PR approval/merge to `dev` branch.
+- No
 
 **Note-taker**: Chris House
-**Daily Standup** - Sunday
+**Daily Standup** - Sunday (11/16)
 **Team Member**: Chris House
 
 ### What did you work on?
-- Finalized PR description and commit message for Ratings and Comments routes.
-- Investigated missing GitHub merge button (existing PR).
-- Organized Postman test plans and documented workflows for Ratings & Comments.
-
-
+- Troubleshot CORS issues between frontend (localhost:5173) and backend (localhost:8080).
+- Verified that frontend fetch calls work without CORS errors.
 
 ### What are you going to work on?
-- Monitor PR merge status.
-- Plan next feature update for comments (nested replies or reactions).
+- Working on fixing the issues asyncronously
 
 
 
 ### Any near-future blockers and how can we support you?
-- Merge approval pending for open PR.
-- Future tasks depend on successful integration of Ratings and Comments into `dev`.
+- Trouble connecting with team for input
