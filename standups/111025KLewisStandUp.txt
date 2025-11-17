@@ -1,0 +1,19 @@
+Note-taker:Karla Lewis 
+Daily Standup:11.10.2025
+Team Member: Karla Lewis
+- What did you work on?
+I was able to get the API token to be called in the fronend with .env file, however my search 
+query did not call any results and I am getting a 500 result. 
+
+- What are you going to work on?
+I will continue to work on this issue and I also will attack the next issues that I was
+assigned in the group project. I feel more comfortable with the frontend of the web 
+development side, however, I feel I need to do more research and understanding of the 
+back end. 
+
+- Any near-future blockers and how can we support you?
+Current blockers that I afacing at the moment is truly personal have created financial 
+hurdles however, I am doing my best to pull myself out of my hole and will more than likely 
+have to make drastical changes. Despite that, I am willing going to be doing my best 
+to make sure that I can understand how to make the frontend connecting to the backend 
+properly and I will become more seasoned in that aveune. 
