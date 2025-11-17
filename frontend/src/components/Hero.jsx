@@ -55,7 +55,7 @@ export default function Hero() {
       {/* Get Started Button */}
       <button
         className="mt-4 px-6 py-2 bg-green-600 text-gray-300 hover:text-white rounded-md border-4 border-gray-300/30 hover:bg-green-500 active:scale-90 transition-all duration-300"
-        onClick={handleGetStarted}
+        onClick={() => Navigate('/auth')}
       >
         Get started
       </button>

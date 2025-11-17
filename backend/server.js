@@ -1,12 +1,20 @@
 import express from "express";
 import verifyToken from "./middleware/auth.js";     // default import (see auth.js below)
 import jwt from "jsonwebtoken";                     // ✅ use default import
+
+import cors from 'cors';
 import showRouter from "./routes/show.js";
 import playlistsRouter from './routes/playlists.js';
+import authRoutes from './routes/auth.js';
+
 
 const app = express();
 app.use(express.json());
 
+app.use(cors({
+  origin: "http://localhost:5173", // allow requests from your frontend
+  credentials: true,               // optional, if you want cookies to be sent
+}));
 
 // Confirms server is running for testing 'playlists' and 'favorites' routes
 app.get('/', (req, res) => {
@@ -36,6 +44,7 @@ app.get("/private/ping", verifyToken, (req, res) => {
 // Protect your shows API
 app.use("/shows", verifyToken, showRouter);
 app.use('/playlists', playlistsRouter);
+app.use('/auth', authRoutes);
 
 
 const PORT = process.env.PORT || 8080;

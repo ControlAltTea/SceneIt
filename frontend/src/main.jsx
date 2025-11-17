@@ -5,7 +5,7 @@ import "./index.css";
 
 import Header from "./components/Header.jsx";
 import Home from "./pages/Home.jsx";
-// import Playlists from "./pages/Playlists.jsx";
+import AuthPage from './components/AuthPage.jsx';
 import Search from "./pages/Search.jsx";
 import ShowPage from "./pages/ShowPage.jsx";
 
@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/playlists" element={<Playlists />} /> */}
+        <Route path='/auth' element={<AuthPage/>} />
         <Route path="/search" element={<Search />} />
         <Route path="/show/:id" element={<ShowPage />} />
       </Routes>

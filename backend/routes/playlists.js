@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const router = express.Router();
 const prisma = new PrismaClient();
 
-/// Helper: confirms user’s Favorites playlist exists
+/// confirms user’s Favorites playlist exists, then creates playlist if "favorite" doesn't exist
 async function ensureFavorites(username) {
   let favorites = await prisma.playlist.findFirst({
     where: { ownerUsername: username, isFavorite: true },

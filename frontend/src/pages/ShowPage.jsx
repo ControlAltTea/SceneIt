@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ShowCard from "../components/ShowCard";
 
-const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"; // need to move later
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 const ShowPage = () => {
   const { id } = useParams();
@@ -44,8 +44,8 @@ const ShowPage = () => {
   if (!details) return <p className="text-white p-6">Show not found</p>;
 
   return (
-    <div className="bg-primary min-h-screen text-white p-6">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="min-h-screen text-white my-32 p-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Hero Poster */}
         <div>
           {details.poster_path ? (
