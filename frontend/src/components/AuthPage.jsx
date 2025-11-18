@@ -63,7 +63,6 @@ const signupUser = async (values) => {
         username: values.username,
         email: values.email,
         password: values.password,
-        // Remove firstName / lastName if backend doesn't support them
       }),
     });
 
@@ -217,30 +216,30 @@ function LoginForm({
     >
       {/* Email Input */}
       <div className="relative">
-        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <Mail className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-300" />
         <input
           type="email"
           placeholder="Email"
           autoComplete="email"
-          className="w-full pl-10 pr-3 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50"
+          className="w-full pl-10 pr-3 py-3 rounded  bg-transparent border-b border-gray-300 focus:outline-none  /50"
           {...register("email")}
         />
       </div>
 
       {/* Password Input */}
       <div className="relative">
-        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Lock className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-300" />
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           autoComplete="current-password"
-          className="w-full pl-10 pr-10 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50"
+          className="w-full pl-10 pr-10 py-3 rounded bg-transparent border-b border-gray-300 focus:outline-none /50"
           {...register("password")}
         />
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
           {showPassword ? <EyeClosed /> : <Eye />}
@@ -291,36 +290,36 @@ function SignupForm({
     >
       {/* Username Input */}
       <div className="relative">
-        <UserRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <UserRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-300" />
         <input
           type="text"
           placeholder="Username"
           autoComplete="username"
-          className="w-full pl-10 pr-3 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50"
+          className="w-full pl-10 pr-3 py-3 rounded bg-transparent border-b border-gray-300 focus:outline-none"
           {...register("username")}
         />
       </div>
 
       {/* Email Input */}
-      <div className="relative">
-        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <div className="relative bg-transparent">
+        <Mail className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="email"
           placeholder="Email"
           autoComplete="email"
-          className="w-full pl-10 pr-3 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50"
+          className="w-full pl-10 pr-3 py-3 rounded-xl bg-transparent border-b border-gray-300 focus:outline-none"
           {...register("email")}
         />
       </div>
 
       {/* Password Input */}
-      <div className="relative">
+      <div className="relative bg-transparent">
         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           autoComplete="new-password"
-          className="w-full pl-10 pr-10 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50"
+          className="w-full pl-10 pr-10 py-3 rounded border border-gray-300 focus:outline-none  /50"
           {...register("password")}
         />
         <button
