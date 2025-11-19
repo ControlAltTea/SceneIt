@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ShowCard from "../components/ShowCard";
+import GenreFilter from "../components/GenreFilter";
 
-const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"; // need to move later
+
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 // TODO:
 // 1. FIX API_KEY TO AT LEAST FUNCTION WHEN SEARCHING FOR TITLES
 // 2. CREATE COMPONENT FOR CATEGORY FILTERING, STARTING WITH A GENRE BUTTON
@@ -60,6 +62,59 @@ const Search = () => {
         {results.map((show) => (
           <ShowCard key={show.id} show={show} />
         ))}
+        {/* Genre filter chips */}
+      <div className="space-y-2 md:col-span-3">
+        <label className="block text-sm text-gray-300">Genre</label>
+        <GenreFilter
+          value={genre}                       // from useSearchParams
+          onChange={(val) => updateParam("genre", val)}
+  />
+</div>
+<div className="grid gap-3 md:grid-cols-5">
+  <input
+    className="border rounded px-3 py-2 text-black"
+    placeholder="Search by title…"
+    value={q}
+    onChange={(e) => updateParam("q", e.target.value)}
+  />
+
+  {/* NEW GENRE FILTER */}
+  <div className="space-y-2">
+    <label className="block text-sm text-gray-300">Genre</label>
+    <GenreFilter
+      value={genre}                       // from useSearchParams
+      onChange={(val) => updateParam("genre", val)}
+    />
+  </div>
+
+  <input
+    className="border rounded px-3 py-2 text-black"
+    type="number"
+    placeholder="Year"
+    value={year}
+    onChange={(e) => updateParam("year", e.target.value)}
+  />
+
+  <input
+    className="border rounded px-3 py-2 text-black"
+    placeholder="Username (playlist owner)"
+    value={username}
+    onChange={(e) => updateParam("username", e.target.value)}
+  />
+
+  <label className="inline-flex items-center gap-2">
+    <input
+      type="checkbox"
+      checked={inPublicPlaylists === "true"}
+      onChange={(e) =>
+        updateParam("inPublicPlaylists", e.target.checked ? "true" : "")
+      }
+    />
+    <span>Public Playlists</span>
+  </label>
+</div>
+
+
       </div>
     </div>
     </div>

@@ -4,7 +4,7 @@ import ShowCard from "./ShowCard"; // ✅ import your ShowCard
 
 
 // ⚡️ Replace with your TMDB API key
-const API_KEY = "77a22f18008a567c7820ad861f4a5dc7"
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export default function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
