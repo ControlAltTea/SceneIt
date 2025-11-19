@@ -1,0 +1,20 @@
+Note-taker: Karla Lewis 
+Daily Standup - Monday, 11/17/2025
+Team Member: 
+- What did you work on?
+Today, I was really focusing on my LinkedIn, Self Reflection  Resume and upcoming Portfolio 
+assignments that is due on 11.21.2025 for the career side of the fellowship. I am looking 
+to graduate and i am falling very short with my percentage and I am working really hard
+to bring the grade up. 
+
+
+- What are you going to work on?
+I plan on cleaning up my code and ask for help from my colleagues to make sure 
+that the code does not break and create more of a headache. 
+
+- Any near-future blockers and how can we support you?
+My future blockers are still personally finanically and I did here the bittersweet news 
+that my student specialisty Cynthia would be leaving soon and she has always advocated 
+for me and all my shortcomings. Beside that I will still stay dedicated and make sure 
+this week on Thursday or Friday. I will schedule office hours with Tea and/or Alex for 
+help to push my work to the develop branch and to the full page via Pull Request.
