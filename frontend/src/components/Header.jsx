@@ -45,7 +45,7 @@ export default function Header() {
             <span className='hidden lg:inline'>SceneIt</span>
           </NavLink>
 
-          {/* Nav  */}
+          {/* Nav */}
           <nav
             className={`${isScrolled
               ? "text-gray-200 dark:text-gray-300"
@@ -54,7 +54,7 @@ export default function Header() {
           >
             <ul className="flex space-x-8 items-center text-gray-700 dark:text-gray-300 transition-all duration-200">
               {/* Browse */}
-              <NavLink to='/browse' className='font-semibold text-lg cursor-pointer hover:underline'>
+              <NavLink to='/search' className='font-semibold text-lg cursor-pointer hover:underline'>
                 <li>Browse</li>
               </NavLink>
 

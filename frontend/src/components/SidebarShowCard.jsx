@@ -9,14 +9,14 @@ export default function SidebarShowCard({ show }) {
   return (
     <Link
       to={`/show/${show.id}`}
-      className="flex items-center gap-3 p-2 rounded-xl hover:bg-zinc-800 transition"
+      className="flex items-center border gap-3 rounded-md hover:bg-zinc-800 transition"
     >
       {/* Poster */}
       {poster ? (
         <img
           src={poster}
           alt={title}
-          className="w-12 h-16 object-cover rounded-md"
+          className="w-12 h-full object-cover rounded-md"
         />
       ) : (
         <div className="w-12 h-16 bg-zinc-700 rounded-md flex items-center justify-center text-xs text-zinc-300">

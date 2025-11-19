@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import { Mail, Lock, Eye, EyeClosed, UserRound } from "lucide-react";
@@ -9,6 +9,11 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [alert, showAlert] = useState({ message: "", show: false });
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const startMode = queryParams.get("mode") || "login";
+
+const [mode, setMode] = useState(startMode);
   const navigate = useNavigate();
 
   const { register, handleSubmit, reset } = useForm({
@@ -27,7 +32,7 @@ export default function AuthPage() {
   // LOGIN HANDLER
 const loginUser = async (values) => {
   try {
-    const response = await fetch("http://localhost:8080/auth/login", {
+    const res = await fetch("http://localhost:8080/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -36,9 +41,9 @@ const loginUser = async (values) => {
       }),
     });
 
-    const data = await response.json();
+    const data = await res.json();
 
-    if (!response.ok) {
+    if (!res.ok) {
       throw new Error(data.error || "Login failed. Please try again.");
     }
 
@@ -56,7 +61,7 @@ const loginUser = async (values) => {
 // SIGNUP HANDLER
 const signupUser = async (values) => {
   try {
-    const response = await fetch("http://localhost:8080/auth/signup", {
+    const res = await fetch("http://localhost:8080/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -66,10 +71,10 @@ const signupUser = async (values) => {
       }),
     });
 
-    const data = await response.json();
+    const data = await res.json();
     console.log(data);
 
-    if (!response.ok) {
+    if (!res.ok) {
       throw new Error(data.error || "Signup failed. Please try again.");
     }
 
@@ -86,72 +91,17 @@ const signupUser = async (values) => {
 
 
   return (
-    <section id="auth" className="w-full mt-28 text-gray-300 flex min-h-screen">
+    <section id="auth" className="w-full mt-20 text-gray-300 flex min-h-screen">
       {/* Left Column */}
       <div className="w-[55%] min-w-[400px] px-8 py-20">
         <h2 className="text-4xl mt-2 mb-10 font-semibold">
           Welcome to <br />
           <span className="text-green-600">SceneIt</span>
         </h2>
-
-        {/* Feature Section */}
-        {/* <ul className="space-y-5 mb-10 list-none">
-          <li>
-            <div className="flex justify-start align-center gap-3">
-              <div className="flex justify-center items-center p-3 rounded-full bg-amber-100">
-                <Mail className="m-auto text-gray-900/50 text-3xl" />
-              </div>
-              <div>
-                <b>Save and Organize Recipes</b>
-                <p>Build your personal cookbook with recipes you love</p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div className="flex justify-start align-center gap-3">
-              <div className="flex justify-center items-center p-3 rounded-full bg-amber-100">
-                <UserRound className="m-auto text-gray-900/50 text-3xl" />
-              </div>
-              <div>
-                <b>Connect with other Chefs</b>
-                <p>
-                  Share recipes and discover new favorites from the community
-                </p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div className="flex justify-start align-center gap-3">
-              <div className="flex justify-center items-center p-3 rounded-full bg-amber-100">
-                <PiChefHatBold className="m-auto text-gray-900/50 text-3xl" />
-              </div>
-              <div>
-                <b>Smart Meal Planning</b>
-                <p>Plan your meals and generate shopping lists automatically</p>
-              </div>
-            </div>
-          </li>
-        </ul> */}
-
-        {/* Dummy Stats */}
-        {/* <div className="flex justify-around mt-10">
-          <div className="flex flex-col space-y-1 text-center">
-            <b className="text-2xl text-green-600">50K+</b>
-            <p>Recipes</p>
-          </div>
-          <div className="flex flex-col space-y-1 text-center">
-            <b className="text-2xl text-green-600">50K+</b>
-            <p>Users</p>
-          </div>
-          <div className="flex flex-col space-y-1 text-center">
-            <b className="text-2xl text-green-600">50K+</b>
-            <p>Rating</p>
-          </div>
-        </div> */}
       </div>
 
       {/* Right Column */}
-      <div className="w-[45%] min-w-[300px] px-8 py-20 flex items-center justify-center">
+      <div className="w-[45%] min-w-[300px] px-8 flex items-center justify-center">
         <div className="w-full max-w-md space-y-6 p-10 border-2 border-gray-800/30 rounded-sm text-center">
           <div className="flex flex-col justify-center items-center space-y-4">
             <div className="flex justify-center items-center p-5 w-20 h-20 rounded-xl shadow-md shadow-green-600 bg-green-600 border-4 border-gray-200">
@@ -267,7 +217,7 @@ function LoginForm({
 
       <button
         type="submit"
-        className="w-full py-3 my-4 bg-green-500 text-black rounded hover:bg-green-600 hover:scale-[1.05] transition cursor-pointer"
+        className="w-full py-3 my-4 rounded border-2 border-gray-300/50 hover:border-gray-300 hover:scale-[.97] hover:text-gray-100 hover:font-medium hover:bg-green-600 transition-all duration-400 ease-in-out cursor-pointer"
       >
         Login
       </button>

@@ -6,16 +6,18 @@ import cors from 'cors';
 import showRouter from "./routes/show.js";
 import playlistsRouter from './routes/playlists.js';
 import authRoutes from './routes/auth.js';
+import ratingsRoute from './routes/ratings.js';
 
 
 const app = express();
 app.use(express.json());
 
+/// allows requests from the frontend
 app.use(cors({
-  origin: "http://localhost:5173", // allow requests from your frontend
+  origin: "http://localhost:5173",
 }));
 
-// Confirms server is running for testing 'playlists' and 'favorites' routes
+/// Confirms server is running for testing 'playlists' and 'favorites' routes
 app.get('/', (req, res) => {
   res.send('Backend server ran successfully!');
 });
@@ -44,6 +46,7 @@ app.get("/private/ping", verifyToken, (req, res) => {
 app.use("/shows", verifyToken, showRouter);
 app.use('/playlists', playlistsRouter);
 app.use('/auth', authRoutes);
+app.use('/ratings', ratingsRoute);
 
 
 const PORT = process.env.PORT || 8080;
