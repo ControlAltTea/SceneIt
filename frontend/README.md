@@ -10,3 +10,21 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+Karla Lewis's Issue #12 Adding Pagination to Search Page 
+Search URL parameters:
+
+q – search query
+
+page – page number (1-based)
+
+genre, year, rating – filters
+
+Explain:
+
+20 results per page (PAGE_SIZE)
+
+Example deep link:
+/search?q=star%20wars&page=3&genre=sci-fi
+
+Note that results are cached client-side per (q, filters, page) to reduce API calls.
