@@ -34,7 +34,7 @@ export default function Header() {
       <header
         id="header"
         className={`min-w-md fixed top-0 left-0 right-0 z-50 transition-[width,margin,padding,transform,background-color,border-radius] duration-700 ease-in-out ${isScrolled
-          ? "w-[92%] bg-[#05000c] text-gray-100 mt-6 px-10 py-6 shadow-[0px_2px_18px_4px_rgba(22,163,74,0.28)] rounded-2xl border-3 border-white/30 mx-auto"
+          ? "w-[92%] bg-[#05000c] text-gray-100 mt-6 px-10 py-6 shadow-[0px_2px_18px_4px_rgba(255,255,255,0.48)] rounded-2xl border-3 border-white/30 mx-auto"
           : "w-full backdrop-blur-sm text-gray-900 py-8 px-20 bg-transparent"
           }`}
       >

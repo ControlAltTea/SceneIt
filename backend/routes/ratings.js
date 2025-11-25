@@ -8,10 +8,10 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const userUsername = req.user.username; // Use username, not id
-    const { mediaTmdbId, score, review } = req.body;
+    const { mediaTmdbId, rating, review } = req.body;
 
-    if (!mediaTmdbId || !score) {
-      return res.status(400).json({ error: "mediaTmdbId and score required." });
+    if (!mediaTmdbId || !rating) {
+      return res.status(400).json({ error: "mediaTmdbId and rating required." });
     }
 
     const savedRating = await prisma.rating.upsert({
@@ -21,11 +21,11 @@ router.post("/", async (req, res) => {
           mediaTmdbId: parseInt(mediaTmdbId),
         },
       },
-      update: { score, review },
+      update: { rating, review },
       create: {
         userUsername,
         mediaTmdbId: parseInt(mediaTmdbId),
-        score,
+        rating,
         review,
       },
     });

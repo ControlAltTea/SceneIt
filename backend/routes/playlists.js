@@ -48,7 +48,73 @@ router.post("/", async (req, res) => {
   }
 });
 
-/// Add media to playlist
+
+/// Adds or removes a show from user's favorites 
+router.post("/favorites/toggle", async (req, res) => {
+  try {
+    const { tmdbId } = req.body;
+    const username = req.user.username;
+
+    const favorites = await ensureFavorites(username);
+
+    /// to chekc if the media is already in the playlist
+    const existing = await prisma.playlistMedia.findFirst({
+      where: {
+        playlistId: favorites.id,
+        mediaTmdbId: tmdbId,
+      },
+    });
+
+    if (existing) {
+      /// Remove from favorites
+      await prisma.playlistMedia.delete({
+        where: { id: existing.id },
+      });
+
+      return res.json({ success: true, favorited: false });
+    }
+
+    // Add to favorites
+    await prisma.playlistMedia.create({
+      data: {
+        playlistId: favorites.id,
+        mediaTmdbId: tmdbId,
+      },
+    });
+
+    return res.json({ success: true, favorited: true });
+  } catch (error) {
+    console.error("Favorite toggle error:", error);
+    res.status(500).json({ error: "Failed to change favorite" });
+  }
+});
+
+
+/// finds and retrieves user's favorites
+router.get("/favorites", async (req, res) => {
+  try {
+    const username = req.user.username;
+
+    const favorites = await prisma.playlist.findFirst({
+      where: { ownerUsername: username, isFavorite: true },
+      include: {
+        playlistMedia: {
+          include: { media: true },
+        },
+      },
+    });
+
+    return res.json(favorites || { playlistMedia: [] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to load favorites" });
+  }
+});
+
+
+
+
+/// Add media to custom playlist
 router.post("/:playlistId/media", async (req, res) => {
   try {
     const { tmdbId, title, posterUrl } = req.body;
@@ -69,7 +135,7 @@ router.post("/:playlistId/media", async (req, res) => {
       create: { tmdbId, title, posterUrl: posterUrl || null },
     });
 
-    // Prevent duplicate entries
+    /// Prevent duplicate entries 
     const exists = await prisma.playlistMedia.findUnique({
       where: {
         playlistName_ownerUsername_mediaTmdbId: {

@@ -10,7 +10,7 @@ import Search from "./pages/Search.jsx";
 import ShowPage from "./pages/ShowPage.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <React.StrictMode>d
     <BrowserRouter>
       <Header />
       <Routes>
@@ -18,6 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path='/auth' element={<AuthPage/>} />
         <Route path="/search" element={<Search />} />
         <Route path="/show/:id" element={<ShowPage />} />
+        {/* <Route path='/:user' element={<ProfilePage />} /> */}
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

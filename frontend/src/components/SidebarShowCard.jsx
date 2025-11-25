@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import FavoriteHeart from "./FavoriteHeart";
 
 export default function SidebarShowCard({ show }) {
   const title = show.title || show.name;
@@ -9,7 +10,7 @@ export default function SidebarShowCard({ show }) {
   return (
     <Link
       to={`/show/${show.id}`}
-      className="flex items-center border gap-3 rounded-md hover:bg-zinc-800 transition"
+      className="relative flex items-center border border-gray-50/10 shadow-[0px_2px_8px_rgba(255,255,255,.3)] hover:shadow-[0px_2px_8px_rgba(255,255,255,.53)] gap-4 rounded-md hover:bg-zinc-800 transition"
     >
       {/* Poster */}
       {poster ? (
@@ -30,10 +31,11 @@ export default function SidebarShowCard({ show }) {
           {title}
         </span>
 
-        <span className="text-xs border-2 border-gray-300/30  text-zinc-400">
+        <span className="text-xs text-zinc-400">
           {show.media_type === "tv" ? "TV Show" : "Movie"}
         </span>
       </div>
+      <FavoriteHeart />
     </Link>
   );
 }
