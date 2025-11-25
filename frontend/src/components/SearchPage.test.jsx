@@ -1,9 +1,11 @@
+// SearchPage.test.jsx (lives in the SAME folder as SearchPage.jsx)
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { SearchPage } from "./pages/SearchPage"; 
+import { SearchPage } from "../SearchPage"; // ✅ same folder as component
 
+// Mock the hook so we don't hit real API
 vi.mock("../hooks/useSearchWithCache", () => ({
   useSearchWithCache: vi.fn(),
 }));
