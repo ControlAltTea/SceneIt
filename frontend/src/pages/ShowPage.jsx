@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ShowCard from "../components/ShowCard";
 import Ratings from '../components/Ratings';
+import FavoriteHeart from "../components/FavoriteHeart";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 

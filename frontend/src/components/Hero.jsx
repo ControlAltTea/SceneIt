@@ -15,10 +15,10 @@ export default function Hero() {
       />
 
       {/* Dark Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-black/40"></div>
 
       {/* Hero Content */}
-      <div className="relative z-10 text-center text-white/50">
+      <div className="relative z-10 text-center text-white/70">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">
           Welcome to SceneIt
         </h1>
