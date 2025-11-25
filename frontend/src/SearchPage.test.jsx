@@ -1,10 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { SearchPage } from "./SearchPage";
+import { SearchPage } from "./pages/SearchPage"; 
 
-// Mock the hook so we don't make real API calls
 vi.mock("../hooks/useSearchWithCache", () => ({
   useSearchWithCache: vi.fn(),
 }));
