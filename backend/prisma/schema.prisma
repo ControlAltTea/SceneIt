@@ -56,7 +56,11 @@ model Episode {
 model Rating {
   userUsername String
   mediaTmdbId  Int
+<<<<<<< HEAD
+  rating        Int
+=======
   score        Int
+>>>>>>> 408a45567b50bd69f65808f4be7b39a884eeaab2
   review       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now()) @updatedAt

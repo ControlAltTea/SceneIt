@@ -6,10 +6,17 @@ async function main() {
 
   /// Creating users to test routes with
   const sampleUsers = [
+<<<<<<< HEAD
+    { email: "chris@test.com", username: "chris", password: "password" },
+    { email: "merling@test.com", username: "merling", password: "password" },
+    { email: "karla@test.com", username: "karla", password: "password" },
+    { email: "rafiq@test.com", username: "rafiq", password: "password" },
+=======
     { email: "chrisHouse@example.com", username: "Chris", password: "password123" },
     { email: "merlingV@example.com", username: "Merling", password: "password123" },
     { email: "KarlaL@example.com", username: "Karla", password: "password123" },
     { email: "RafiqS@example.com", username: "Rafiq", password: "password123" },
+>>>>>>> 408a45567b50bd69f65808f4be7b39a884eeaab2
   ];
 
   /// Sample movies
