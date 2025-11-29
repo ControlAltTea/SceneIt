@@ -8,9 +8,10 @@ import Home from "./pages/Home.jsx";
 import AuthPage from './components/AuthPage.jsx';
 import Search from "./pages/Search.jsx";
 import ShowPage from "./pages/ShowPage.jsx";
+import ProfilePage from './pages/ProfilePage.jsx';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>d
+  <React.StrictMode>
     <BrowserRouter>
       <Header />
       <Routes>
@@ -18,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path='/auth' element={<AuthPage/>} />
         <Route path="/search" element={<Search />} />
         <Route path="/show/:id" element={<ShowPage />} />
-        {/* <Route path='/:user' element={<ProfilePage />} /> */}
+        <Route path='/profile' element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
