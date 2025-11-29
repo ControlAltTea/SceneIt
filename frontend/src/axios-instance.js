@@ -1,5 +1,6 @@
 import axios from "axios";
 import supabase from "./client";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:8080";
@@ -10,6 +11,8 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+const navigate = useNavigate();
 
 
 /// attached Supabase access_token to every request automatically
@@ -39,7 +42,7 @@ api.interceptors.response.use(
       await supabase.auth.signOut();
 
       /// redirects user
-      window.location.href = "/auth";
+      navigate('/auth');
     }
     return Promise.reject(error);
   }

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import supabase from '../client';
 import { useForm } from "react-hook-form";
+
 
 import { Mail, Lock, Eye, EyeClosed, UserRound } from "lucide-react";
 
@@ -32,20 +34,18 @@ const [mode, setMode] = useState(startMode);
   // LOGIN HANDLER
 const loginUser = async (values) => {
   try {
-    const res = await fetch("http://localhost:8080/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      passowrkd: values.password
+    })
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || "Login failed. Please try again.");
+    if (error) {
+      throw new Error(error.message);
     }
+    
+    /// get session and user
+    const session = data.session;
+    const user = data.user;
 
     // Store token & user in localStorage
     localStorage.setItem("token", data.token);
