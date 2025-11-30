@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from '../client';
 import { TextSearch } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SearchSidebar from "./SearchSidebar";
@@ -10,7 +11,7 @@ export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
-  // Scroll threshold for header style
+  /// Scroll threshold for header style
   useEffect(() => {
     const handleScroll = () => {
       const threshold = 8;
@@ -20,13 +21,42 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /// get user from localStorage after signed in/up from AuthPage
+  /// get user from supabase instead of localStorage after signed in/up from AuthPage
+  
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, [location]);
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUser({
+          email: data.user.email,
+          username: data.user.user_metadata?.username || null,
+        });
+      } else {
+        setUser(null)
+      }
+    };
+
+    loadUser()
+  }, [location])
+
+  /// listens for when user logs in or logs out
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          setUser({
+            email: session.user.email,
+            username: session.user.user_metadata?.username || null,
+          });
+        } else {
+          setUser(null);
+        }
+      }
+    );
+
+    /// return function that logs user out
+    return () => listener.subscription.unsubscribe();
+  }, [])
 
 
   return (
@@ -64,7 +94,7 @@ export default function Header() {
                   <li>Login</li>
                 </NavLink>
               ) : (
-                <NavLink to={`/${user.username}`} className='font-semibold text-lg cursor-pointer hover:underline'>
+                <NavLink to={`/${user.username || 'Profile'}`} className='font-semibold text-lg cursor-pointer hover:underline'>
                   <li>@{user.username}</li>
                 </NavLink>
               )}

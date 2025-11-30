@@ -25,7 +25,7 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ error: "Email or username already taken" });
     }
 
-    // Create user (password stored as plain text, per your request)
+    /// Create user password
     const user = await prisma.user.create({
       data: { username, email, password }
     });

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import supabase from '../client';
+import { supabase } from '../client';
 import { useForm } from "react-hook-form";
 
 
@@ -15,7 +15,7 @@ export default function AuthPage() {
   const queryParams = new URLSearchParams(location.search);
   const startMode = queryParams.get("mode") || "login";
 
-const [mode, setMode] = useState(startMode);
+  const [mode, setMode] = useState(startMode);
   const navigate = useNavigate();
 
   const { register, handleSubmit, reset } = useForm({
@@ -31,12 +31,12 @@ const [mode, setMode] = useState(startMode);
   const toggleFormMode = () => setIsLogin(!isLogin);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  // LOGIN HANDLER
+  /// Login with supabase
 const loginUser = async (values) => {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
-      passowrkd: values.password
+      password: values.password
     })
 
     if (error) {
@@ -58,28 +58,32 @@ const loginUser = async (values) => {
   }
 };
 
-// SIGNUP HANDLER
+/// signup handler function (supabase) that saves username
 const signupUser = async (values) => {
   try {
-    const res = await fetch("http://localhost:8080/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: values.username,
-        email: values.email,
-        password: values.password,
-      }),
-    });
+    const { data, error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: {
+          username: values.username,
+        },
+      },
+    })
 
-    const data = await res.json();
-    console.log(data);
-
-    if (!res.ok) {
-      throw new Error(data.error || "Signup failed. Please try again.");
+    if (error) {
+      throw new Error(error.message);
     }
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    const session = data.session;
+    const user = data.user;
+
+    if(session) {
+      localStorage.setItem('token', session.access_token);
+    }
+
+    /// saves user in local storage
+    localStorage.setItem('user', JSON.stringify(user));
 
     showAlert({ show: true, message: "Signup successful! Welcome to SceneIt!" });
     reset();
