@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  url       = env("DATABASE_URL")  // pooled (pgbouncer) URL
+  directUrl = env("DIRECT_URL")    // direct port 5432 for migrations
 }
 
 enum WatchStatus {
