@@ -1,21 +1,21 @@
 // backend/src/routes/search.js
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import { buildShowWhere } from "../utils/buildShowWhere.js";
 
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// Keep this aligned with your Prisma enum Genre
-const ALLOWED_GENRES = new Set([
-  "ACTION","COMEDY","DRAMA","FANTASY","HORROR","ROMANCE","SCIFI","THRILLER","ANIMATION",
-]);
+const PAGE_SIZE = 20;
+const MAX_PAGE_SIZE = 50;
 
-// Utility: coerce to int safely
-function toInt(n, fallback) {
-  const v = Number(n);
-  return Number.isFinite(v) ? v : fallback;
+// Utility: safely coerce to int
+function toInt(value, fallback) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : fallback;
 }
 
+// GET /api/search
 router.get("/search", async (req, res) => {
   try {
     const {
@@ -23,81 +23,53 @@ router.get("/search", async (req, res) => {
       genre,
       year,
       username,
-      inPublicPlaylists,  // expected "true" to filter only public playlists
-      limit = "20",
-      offset = "0",
+      inPublicPlaylists, // expected "true" to filter only public playlists
+      limit,
+      offset,
     } = req.query;
 
-    // Build Prisma "where"
-    const where = {};
+    // ---------- Build Prisma "where" via helper ----------
+    const where = buildShowWhere({
+      q,
+      genre,
+      year,
+      username,
+      inPublicPlaylists,
+    });
 
-    // Free-text search on Media.title/description (case-insensitive)
-    const qTrim = String(q).trim();
-    if (qTrim) {
-      where.OR = [
-        { title:       { contains: qTrim, mode: "insensitive" } },
-        { description: { contains: qTrim, mode: "insensitive" } },
-      ];
-    }
-
-    // Year → maps to Media.releaseYear (Int?)
-    const yearInt = toInt(year, null);
-    if (yearInt !== null) {
-      where.releaseYear = yearInt;
-    }
-
-    // Genre → maps to Media.genres enum[]
-    if (genre && ALLOWED_GENRES.has(String(genre).toUpperCase())) {
-      where.genres = { has: String(genre).toUpperCase() };
-    }
-
-    // Username / Public playlist filters via PlaylistMedia → Playlist
-    // Only add this block if we actually have constraints
-    const wantPublicOnly = String(inPublicPlaylists) === "true";
-    const wantOwner = username && String(username).trim();
-
-    if (wantPublicOnly || wantOwner) {
-      const playlistWhere = {};
-      if (wantPublicOnly) playlistWhere.isPublic = true;
-
-      // NOTE: Your Playlist model has ownerUsername (String) and relation "User"
-      // Case-insensitive equality isn't supported on equals; use exact match or normalize.
-      if (wantOwner) {
-        playlistWhere.ownerUsername = String(username).trim();
-      }
-
-      // Media has relation field: PlaylistMedia PlaylistMedia[]
-      // And PlaylistMedia has relation field "Playlist"
-      where.PlaylistMedia = {
-        some: { Playlist: playlistWhere },
-      };
-    }
-
-    // Pagination
-    const take = Math.max(1, Math.min(50, toInt(limit, 20)));
+    // ---------- Pagination ----------
+    // Prefer explicit `limit`/`offset` if provided, otherwise fall back to PAGE_SIZE
+    const take = Math.max(1, Math.min(50, toInt(limit, PAGE_SIZE)));
     const skip = Math.max(0, toInt(offset, 0));
-
-    // Query
+    // ---------- Query DB ----------
     const [items, total] = await Promise.all([
-      prisma.media.findMany({
+      prisma.show.findMany({
         where,
         skip,
         take,
         orderBy: { updatedAt: "desc" },
-        // You can include related data if your frontend needs it:
+        // include related data if needed by frontend
         // include: {
         //   PlaylistMedia: {
-        //     include: { Playlist: true }
-        //   }
-        // }
+        //     include: { Playlist: true },
+        //   },
+        // },
       }),
       prisma.media.count({ where }),
     ]);
 
-    res.json({ items, total });
+    const page = Math.floor(skip / take) + 1;
+    const totalPages = Math.max(1, Math.ceil(total / take));
+
+    res.json({
+      items,
+      total,
+      page,
+      pageSize: take,
+      totalPages,
+    });
   } catch (err) {
     console.error("GET /api/search error:", err);
-    // Avoid leaking internal details to client
     res.status(500).json({ error: "Internal error while searching" });
   }
 });
