@@ -1,0 +1,51 @@
+/* Container Box */
+.genre-filter-box {
+    background-color: #1f1f2e; /* deep purple-gray card */
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  /* Label */
+  .genre-filter-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f5f5f5;
+    margin-bottom: 10px;
+  }
+  
+  /* Chip Container */
+  .genre-chip-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  /* Chip Styles */
+  .genre-chip {
+    background: #2a2a3b;
+    color: #ddd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+  }
+  
+  /* Hover */
+  .genre-chip:hover {
+    background: #3a3a4d;
+    border-color: #555;
+  }
+  
+  /* Active Chip (pink highlight) */
+  .genre-chip.active {
+    background: #ff4eb8;
+    color: white;
+    border-color: #ff4eb8;
+    box-shadow: 0 0 10px rgba(255, 78, 184, 0.6);
+    transform: scale(1.07);
+  }
+  

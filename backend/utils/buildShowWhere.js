@@ -100,43 +100,97 @@ const ALLOWED_GENRES = new Set([
 //     return { AND };
 //   }
   
-export function buildShowWhere({ q, genre, year }) {
+// export function buildShowWhere({ q, genre, year }) {
+//   const AND = [];
+
+//   // Free-text search: title / description
+//   const qTrim = (q ?? "").trim();
+//   if (qTrim) {
+//     AND.push({
+//       OR: [
+//         { title: { contains: qTrim, mode: "insensitive" } },
+//         { description: { contains: qTrim, mode: "insensitive" } },
+//       ],
+//     });
+//   }
+
+//   // Genre (simple string field)
+//   if (genre && genre !== "ALL") {
+//     const g = String(genre).trim();
+//     if (g) {
+//       AND.push({
+//         // Show.genre is optional String? in your schema
+//         genre: {
+//           equals: g,
+//           mode: "insensitive",
+//         },
+//       });
+//     }
+//   }
+
+//   // Year → maps to Show.release_year
+//   if (year) {
+//     const y = Number(year);
+//     if (Number.isInteger(y)) {
+//       AND.push({ release_year: y });
+//     }
+//   }
+
+//   // If no filters, return empty where → full set
+//   if (AND.length === 0) return {};
+//   return { AND };
+// }
+
+export function buildShowWhere({ q, genre, year, username, inPublicPlaylists }) {
   const AND = [];
 
-  // Free-text search: title / description
-  const qTrim = (q ?? "").trim();
-  if (qTrim) {
+  // Free text search
+  if (q) {
     AND.push({
       OR: [
-        { title: { contains: qTrim, mode: "insensitive" } },
-        { description: { contains: qTrim, mode: "insensitive" } },
+        { title: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
       ],
     });
   }
 
-  // Genre (simple string field)
-  if (genre && genre !== "ALL") {
-    const g = String(genre).trim();
-    if (g) {
-      AND.push({
-        // Show.genre is optional String? in your schema
-        genre: {
-          equals: g,
-          mode: "insensitive",
-        },
-      });
-    }
+  // Genre enum[]
+  if (genre) {
+    AND.push({
+      genres: { has: genre.toUpperCase() },
+    });
   }
 
-  // Year → maps to Show.release_year
+  // releaseYear
   if (year) {
-    const y = Number(year);
-    if (Number.isInteger(y)) {
-      AND.push({ release_year: y });
+    const yr = Number(year);
+    if (Number.isInteger(yr)) {
+      AND.push({ releaseYear: yr });
     }
   }
 
-  // If no filters, return empty where → full set
-  if (AND.length === 0) return {};
-  return { AND };
+  // Owner username
+  if (username) {
+    AND.push({
+      PlaylistMedia: {
+        some: {
+          Playlist: {
+            ownerUsername: username,
+          },
+        },
+      },
+    });
+  }
+
+  if (inPublicPlaylists === "true") {
+    AND.push({
+      PlaylistMedia: {
+        some: {
+          Playlist: { isPublic: true },
+        },
+      },
+    });
+  }
+
+  return AND.length ? { AND } : {};
 }

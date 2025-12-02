@@ -2,10 +2,13 @@ import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSearchWithCache } from "../hooks/useSearchWithCache";
 import { Pagination } from "../components/Pagination";
+import GenreFilter from "../components/filters/GenreFilter";
+
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const [genre, setGenre] = useState("ALL");
+  const [items, setItems] = useState([]);
   const q = searchParams.get("q") || "";
   const page = Number(searchParams.get("page") || 1);
 
