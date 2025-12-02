@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from '../client';
+import supabase from '../client';
 import { TextSearch } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SearchSidebar from "./SearchSidebar";
@@ -94,7 +94,7 @@ export default function Header() {
                   <li>Login</li>
                 </NavLink>
               ) : (
-                <NavLink to={`/${user.username || 'Profile'}`} className='font-semibold text-lg cursor-pointer hover:underline'>
+                <NavLink to={`/${user.username}`} className='font-semibold text-lg cursor-pointer hover:underline'>
                   <li>@{user.username}</li>
                 </NavLink>
               )}

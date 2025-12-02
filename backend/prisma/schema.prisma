@@ -9,16 +9,17 @@ datasource db {
 }
 
 model Profile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  username  String   @unique
+  id       String  @id @default(cuid())
+  userId   String  @unique
+  username String  @unique
+  email    String? @unique
+
   avatarUrl String?
   createdAt DateTime @default(now())
 
   playlists Playlist[]
   ratings   Rating[]
   watchlist Watchlist[]
-
 }
 
 /// Unified model for both Movies and TV Shows
@@ -68,7 +69,6 @@ model Rating {
   @@id([profileId, mediaTmdbId])
 }
 
-
 /// Each watchlist entry links one user ↔ one media item
 model Watchlist {
   profileId   String
@@ -83,34 +83,31 @@ model Watchlist {
   @@id([profileId, mediaTmdbId])
 }
 
-
 /// Playlist belongs to a single profile
 model Playlist {
-  id          Int             @id @default(autoincrement())
-  profileId   String
-  name        String
-  isPublic    Boolean         @default(true)
-  isFavorite  Boolean         @default(false)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @default(now()) @updatedAt
+  id         Int      @id @default(autoincrement())
+  profileId  String
+  name       String
+  isPublic   Boolean  @default(true)
+  isFavorite Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
-  profile      Profile        @relation(fields: [profileId], references: [userId], onDelete: Cascade)
+  profile       Profile         @relation(fields: [profileId], references: [userId], onDelete: Cascade)
   playlistMedia PlaylistMedia[]
 
-  @@unique([name, profileId]) // one playlist name per user
+  @@unique([name, profileId])
 }
-
 
 /// PlaylistMedia connects playlists with TV series and Movies
 model PlaylistMedia {
   playlistName String
-  profileId    String
   mediaTmdbId  Int
-  playlist Playlist @relation(fields: [playlistName, profileId], references: [name, profileId], onDelete: Cascade)
-  media    Media    @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+  playlist     Playlist @relation(fields: [playlistName, profileId], references: [name, profileId], onDelete: Cascade)
+  media        Media    @relation(fields: [mediaTmdbId], references: [tmdbId], onDelete: Cascade)
+
   @@id([playlistName, profileId, mediaTmdbId])
 }
-
 
 /// Enums
 enum MediaType {

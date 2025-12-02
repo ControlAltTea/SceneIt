@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { supabase } from '../client';
+import supabase from '../client';
 import { useForm } from "react-hook-form";
 
 
@@ -20,11 +20,9 @@ export default function AuthPage() {
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
+      username: "",
       email: "",
       password: "",
-      firstName: "",
-      lastName: "",
-      username: "",
     },
   });
 
@@ -244,7 +242,7 @@ function SignupForm({
     >
       {/* Username Input */}
       <div className="relative">
-        <UserRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-300" />
+        <UserRound className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="text"
           placeholder="Username"
@@ -268,18 +266,18 @@ function SignupForm({
 
       {/* Password Input */}
       <div className="relative bg-transparent">
-        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Lock className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           autoComplete="new-password"
-          className="w-full pl-10 pr-10 py-3 rounded border border-gray-300 focus:outline-none  /50"
+          className="w-full pl-10 pr-3 py-3 rounded bg-transparent border-b border-gray-300 focus:outline-none"
           {...register("password")}
         />
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
           {showPassword ? <EyeClosed /> : <Eye />}
@@ -300,11 +298,11 @@ function Alert({ alert, showAlert }) {
   return (
     <>
       {alert.show && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+        <div className="bg-transparent border border-red-400 text-red-700 px-6 py-3 rounded relative mb-4">
           <span className="block sm:inline">{alert.message}</span>
           <button
             onClick={() => showAlert({ message: "", show: false })}
-            className="absolute top-0 bottom-0 right-0 px-4 py-3"
+            className="absolute top-0 bottom-0 right-0 py-3"
           >
             <span className="sr-only">Close</span>
             <svg
@@ -327,7 +325,7 @@ function SignupAlert({ alert, showAlert }) {
     return (
         <>
             {alert.show && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <div className="bg-transparent text-red-700 px-4 py-3 rounded relative mb-4">
                     <span className="block sm:inline">{alert.message}</span>
                     <button
                         onClick={() => showAlert({ message: "", show: false })}

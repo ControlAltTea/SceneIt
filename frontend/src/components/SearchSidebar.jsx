@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "motion/react";
-import { X, Heart, Star,  } from "lucide-react";
+import { X } from "lucide-react";
 import SearchInput from "./SearchInput";
 import SidebarShowCard from './SidebarShowCard';
 

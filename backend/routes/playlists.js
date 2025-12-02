@@ -5,9 +5,9 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 /// confirms user’s Favorites playlist exists, then creates playlist if "favorite" doesn't exist
-async function ensureFavorites(username) {
+async function ensureFavorites(profileId) {
   let favorites = await prisma.playlist.findFirst({
-    where: { ownerUsername: username, isFavorite: true },
+    where: { profileId, isFavorite: true },
   });
 
   if (!favorites) {
@@ -16,7 +16,7 @@ async function ensureFavorites(username) {
         name: "Favorites",
         isFavorite: true,
         isPublic: false,
-        ownerUsername: username,
+        profileId,
       },
     });
   }
@@ -25,8 +25,7 @@ async function ensureFavorites(username) {
 }
 
 
-// POST /playlists
-// Create a new playlist (user-created, not favorites)
+/// Create a new playlist (user-created, not favorites)
 
 router.post("/", async (req, res) => {
     try {
@@ -37,7 +36,7 @@ router.post("/", async (req, res) => {
         }
 
     const playlist = await prisma.playlist.create({
-      data: { name, isPublic, ownerUsername },
+      data: { name, isPublic, profileId: userId },
     });
 
     res.status(201).json(playlist);
@@ -52,87 +51,81 @@ router.post("/", async (req, res) => {
 // Add a show to the user's Favorites playlist
 
 router.post("/favorites", async (req, res) => {
-    try {
-        const { userId, tmdbId, title, posterUrl } = req.body;
+  try {
+    const { profileId, tmdbId, title, posterUrl } = req.body;
 
-        if (!userId || !tmdbId || !title) {
-            return res.status(400).json({ error: "Missing required fields." });
-        }
-
-        // Ensure the show exists
-        const show = await prisma.show.upsert({
-            where: { tmdbId: String(tmdbId) },
-            update: {},
-            create: {
-                tmdbId: String(tmdbId),
-                title,
-                posterUrl: posterUrl || null,
-            },
-        });
-
-        // Get or create favorites playlist
-        const favorites = await getFavPlaylist(userId);
-
-        // Guard added to avoide duplicate shows being added to users' playlists
-        const alreadyFavorite = await prisma.playlist.findFirst({
-            where: {
-                id: favorites.id,
-                shows: { some: { id: show.id } },
-            },
-        });
-
-        if (alreadyFavorite) {
-            return res.status(200).json({ message: "Show already in favorites." });
-        }
-
-
-        // Connect the show
-        const updatedFavorites = await prisma.playlist.update({
-            where: { id: favorites.id },
-            data: {
-                shows: { connect: { id: show.id } },
-            },
-            include: { shows: true },
-        });
-
-        res.status(201).json(updatedFavorites);
-    } catch (error) {
-        console.error("Error adding favorite:", error);
-        res.status(500).json({ error: "Failed to add favorite." });
+    if (!profileId || !tmdbId || !title) {
+      return res.status(400).json({ error: "Missing required fields." });
     }
+
+    // Upsert the media
+    const media = await prisma.media.upsert({
+      where: { tmdbId },
+      update: {},
+      create: { tmdbId, title, posterUrl: posterUrl || null },
+    });
+
+    // Get or create favorites playlist
+    const favorites = await ensureFavorites(profileId);
+
+    // Check if media is already in playlist
+    const exists = await prisma.playlistMedia.findUnique({
+      where: {
+        playlistId_mediaTmdbId: {
+          playlistId: favorites.id,
+          mediaTmdbId: media.tmdbId,
+        },
+      },
+    });
+
+    if (exists) return res.status(200).json({ message: "Media already in favorites." });
+
+    // Connect media
+    await prisma.playlistMedia.create({
+      data: {
+        playlistId: favorites.id,
+        mediaTmdbId: media.tmdbId,
+      },
+    });
+
+    const updatedFavorites = await prisma.playlist.findUnique({
+      where: { id: favorites.id },
+      include: { playlistMedia: { include: { media: true } } },
+    });
+
+    res.status(201).json(updatedFavorites);
+  } catch (err) {
+    console.error("Error adding favorite:", err);
+    res.status(500).json({ error: "Failed to add favorite." });
+  }
 });
 
 
 
-// GET /playlists/favorites/:userId
-// Fetches the user's Favorites playlist
 
-router.get("/favorites/:userId", async (req, res) => {
-    try {
-        const { userId } = req.params;
+/// Fetches the user's Favorites playlist
+router.get("/favorites/:profileId", async (req, res) => {
+  try {
+    const { profileId } = req.params;
 
-        if (!userId) {
-            return res.status(400).json({ error: "Missing userId parameter." });
-        }
-
-        const favorites = await prisma.playlist.findFirst({
-            where: { ownerId: userId, isFavorite: true },
-            include: { shows: true },
-        });
-
-        if (!favorites) {
-            return res.status(200).json({ shows: [], message: "No favorites playlist found." });
-        }
-
-        return res.status(200).json({
-            id: favorites.id,
-            name: favorites.name,
-            shows: favorites.shows || [],
-        });
-    } catch (error) {
-        console.error("Error fetching favorites:", error);
-        return res.status(500).json({ error: "Failed to fetch favorites." });
+    if (!profileId) {
+      return res.status(400).json({ error: "Missing profileId parameter." });
     }
+
+    const favorites = await prisma.playlist.findFirst({
+      where: { profileId, isFavorite: true },
+      include: { playlistMedia: { include: { media: true } } },
+    });
+
+    if (!favorites) {
+      return res.status(200).json({ playlist: null, message: "No favorites playlist found." });
+    }
+
+    return res.status(200).json(favorites);
+  } catch (error) {
+    console.error("Error fetching favorites:", error);
+    return res.status(500).json({ error: "Failed to fetch favorites." });
+  }
 });
 
 
@@ -141,139 +134,85 @@ router.get("/favorites/:userId", async (req, res) => {
 /// Add media to custom playlist
 router.post("/:playlistId/media", async (req, res) => {
   try {
-    const { tmdbId, title, posterUrl } = req.body;
     const { playlistId } = req.params;
+    const { tmdbId, title, posterUrl } = req.body;
 
-    if (!tmdbId || !title) {
-      return res.status(400).json({ error: "Missing tmdbId or title." });
+    if (!playlistId || !tmdbId || !title) {
+      return res.status(400).json({ error: "Missing playlistId or media info." });
     }
 
-    // Fetch playlist first
     const playlist = await prisma.playlist.findUnique({ where: { id: Number(playlistId) } });
     if (!playlist) return res.status(404).json({ error: "Playlist not found." });
 
-    // Ensure media exists
     const media = await prisma.media.upsert({
       where: { tmdbId },
       update: {},
       create: { tmdbId, title, posterUrl: posterUrl || null },
     });
 
-    /// Prevent duplicate entries 
     const exists = await prisma.playlistMedia.findUnique({
       where: {
-        playlistName_ownerUsername_mediaTmdbId: {
-          playlistName: playlist.name,
-          ownerUsername: playlist.ownerUsername,
+        playlistId_mediaTmdbId: {
+          playlistId: playlist.id,
           mediaTmdbId: media.tmdbId,
         },
       },
     });
 
-    if (exists) return res.json({ message: "Media already in playlist." });
+    if (exists) return res.status(200).json({ message: "Media already in playlist." });
 
     await prisma.playlistMedia.create({
-      data: {
-        playlistName: playlist.name,
-        ownerUsername: playlist.ownerUsername,
-        mediaTmdbId: media.tmdbId,
-      },
+      data: { playlistId: playlist.id, mediaTmdbId: media.tmdbId },
     });
 
-    const updated = await prisma.playlist.findUnique({
-      where: { id: Number(playlistId) },
+    const updatedPlaylist = await prisma.playlist.findUnique({
+      where: { id: playlist.id },
       include: { playlistMedia: { include: { media: true } } },
     });
 
-    res.status(201).json(updated);
+    res.status(201).json(updatedPlaylist);
   } catch (err) {
-    console.error(err);
+    console.error("Error adding media:", err);
     res.status(500).json({ error: "Failed to add media." });
   }
 });
+
 
 /// Remove media from playlist
 router.delete("/:playlistId/media/:tmdbId", async (req, res) => {
   try {
     const { playlistId, tmdbId } = req.params;
 
-    const playlist = await prisma.playlist.findUnique({ where: { id: Number(playlistId) } });
-    if (!playlist) return res.status(404).json({ error: "Playlist not found." });
-
     await prisma.playlistMedia.deleteMany({
       where: {
-        playlistName: playlist.name,
-        ownerUsername: playlist.ownerUsername,
+        playlistId: Number(playlistId),
         mediaTmdbId: Number(tmdbId),
       },
     });
 
     res.json({ message: "Media removed successfully." });
   } catch (err) {
-    console.error(err);
+    console.error("Error removing media:", err);
     res.status(500).json({ error: "Failed to remove media." });
   }
 });
 
+
 /// Get all playlists for a user
-router.get("/user/:username", async (req, res) => {
+router.get("/user/:profileId", async (req, res) => {
   try {
-    const { username } = req.params;
-    await ensureFavorites(username);
+    const { profileId } = req.params;
 
-        const playlists = await prisma.playlist.findMany({
-            where: { ownerId: userId },
-            include: { shows: true },
-        });
+    const playlists = await prisma.playlist.findMany({
+      where: { profileId },
+      include: { playlistMedia: { include: { media: true } } },
+    });
 
-        if (!playlists || playlists.length === 0) {
-            return res.status(200).json({ playlists: [], message: "No playlists found for user." });
-        }
-
-        return res.status(200).json({ playlists });
-    } catch (error) {
-        console.error("Error fetching playlists:", error);
-        return res.status(500).json({ error: "Failed to fetch playlists." });
-    }
-});
-
-
-// POST /playlists/init
-// Initialize user playlists (auto-create Favorites on first login)
-
-router.post("/init", async (req, res) => {
-    try {
-        const { userId } = req.body;
-
-        if (!userId) {
-            return res.status(400).json({ error: "Missing userId." });
-        }
-
-        // Check if Favorites already exist
-        let favorites = await prisma.playlist.findFirst({
-            where: { ownerId: userId, isFavorite: true },
-        });
-
-        // Create if not found
-        if (!favorites) {
-            favorites = await prisma.playlist.create({
-                data: {
-                    name: "Favorites",
-                    isFavorite: true,
-                    isPublic: false,
-                    ownerId: userId,
-                },
-            });
-        }
-
-        res.status(200).json({
-            message: "User playlists initialized successfully.",
-            favorites,
-        });
-    } catch (error) {
-        console.error("Error initializing playlists:", error);
-        res.status(500).json({ error: "Failed to initialize playlists." });
-    }
+    res.status(200).json({ playlists });
+  } catch (err) {
+    console.error("Error fetching playlists:", err);
+    res.status(500).json({ error: "Failed to fetch playlists." });
+  }
 });
 
 export default router;
