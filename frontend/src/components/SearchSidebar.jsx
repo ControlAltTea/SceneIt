@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "motion/react";
-import { X, Heart, Star,  } from "lucide-react";
+import { X } from "lucide-react";
 import SearchInput from "./SearchInput";
 import SidebarShowCard from './SidebarShowCard';
 
@@ -8,12 +8,13 @@ export default function SearchSidebar({ isOpen, onClose }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
 
-  // Fetch logic (debounced, no AbortController)
+  /// Fetch logic (debounced, no AbortController)
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
       return;
     }
+
 
     const timeout = setTimeout(async () => {
       try {
@@ -31,7 +32,7 @@ export default function SearchSidebar({ isOpen, onClose }) {
         const data = await res.json();
         console.log(data);
 
-        // show only movies and tv shows (exclude actors/actresses, etc)
+        /// show only movies and tv shows (exclude actors/actresses, etc)
         const filteredMedia = (data.results || []).filter((media) => media.media_type === 'movie' || media.media_type === 'tv');
         setResults(filteredMedia);
       } catch (err) {
@@ -41,7 +42,6 @@ export default function SearchSidebar({ isOpen, onClose }) {
 
     return () => clearTimeout(timeout);
   }, [query]);
-
 
 
   return (
@@ -59,7 +59,7 @@ export default function SearchSidebar({ isOpen, onClose }) {
 
           {/* Sidebar */}
           <motion.aside
-            className="fixed top-0 right-0 h-full w-96 p-4 bg-[#05000c] border-l-2 border-gray-700/50 text-gray-400 shadow-2xl z-50 flex flex-col"
+            className="fixed top-0 right-0 h-full w-[33%] min-w-96 p-4 bg-[#05000c] border-l-2 border-gray-700/50 text-gray-400 shadow-2xl z-50 flex flex-col"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

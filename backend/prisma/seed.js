@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import supabase from '../client.js';
+
+console.log(supabase);
 const prisma = new PrismaClient();
 
 async function main() {
@@ -6,17 +9,10 @@ async function main() {
 
   /// Creating users to test routes with
   const sampleUsers = [
-<<<<<<< HEAD
     { email: "chris@test.com", username: "chris", password: "password" },
     { email: "merling@test.com", username: "merling", password: "password" },
     { email: "karla@test.com", username: "karla", password: "password" },
     { email: "rafiq@test.com", username: "rafiq", password: "password" },
-=======
-    { email: "chrisHouse@example.com", username: "Chris", password: "password123" },
-    { email: "merlingV@example.com", username: "Merling", password: "password123" },
-    { email: "KarlaL@example.com", username: "Karla", password: "password123" },
-    { email: "RafiqS@example.com", username: "Rafiq", password: "password123" },
->>>>>>> 408a45567b50bd69f65808f4be7b39a884eeaab2
   ];
 
   /// Sample movies
@@ -42,26 +38,46 @@ async function main() {
   ];
 
   for (const userData of sampleUsers) {
-    /// Upsert users to db
-    const user = await prisma.user.upsert({
-      where: { email: userData.email },
-      update: {},
-      create: userData,
+    /// Pushes sample users (the team) to Supabase
+    const { data: signUpData, error: signUpError } = await supabase.auth.admin.createUser({
+      email: userData.email,
+      password: userData.password,
+      email_confirm: true,
+      user_metadata: { username: userData.username },
     });
-    console.log(`User seeded: ${user.username}`);
 
-    /// Upsert favorite playlists for eery user
+    if (signUpError) {
+      console.error('Supabase user error:', signUpError);
+      continue;
+    }
+
+    const supabaseUser = signUpData.user;
+    console.log(`Supabase user seeded: ${userData.username}`)
+
+    /// Creates profiles in prisma that references Supabase UID
+    const profile = await prisma.profile.upsert({
+      where: { username: userData.username },
+      update: {},
+      create: {
+        username: userData.username,
+        email: userData.email,
+        userId: supabaseUser.id,
+      },
+    });
+
+    /// Upsert default favorite playlists for eery user
     const favorites = await prisma.playlist.upsert({
-      where: { name_ownerUsername: { name: "Favorites", ownerUsername: user.username } },
+      where: { name_profileId: { name: "Favorites", profileId: profile.userId } },
       update: {},
       create: {
         name: "Favorites",
         isFavorite: true,
         isPublic: false,
-        ownerUsername: user.username,
+        profileId: profile.userId,
+        ownerUsername: profile.username,
       },
     });
-    console.log(`Favorites playlist created for: ${user.username}`);
+    console.log(`Favorites playlist created for: ${profile.username}`);
 
     /// Upsert media & connect them to Favorites playlist
     for (const m of mediaData) {
@@ -74,9 +90,9 @@ async function main() {
       /// Connect media to playlist if not already connected
       const existingConnection = await prisma.playlistMedia.findUnique({
         where: {
-          playlistName_ownerUsername_mediaTmdbId: {
+          playlistName_profileId_mediaTmdbId: {
             playlistName: favorites.name,
-            ownerUsername: favorites.ownerUsername,
+            profileId: favorites.profileId,
             mediaTmdbId: media.tmdbId,
           },
         },
@@ -86,11 +102,11 @@ async function main() {
         await prisma.playlistMedia.create({
           data: {
             playlistName: favorites.name,
-            ownerUsername: favorites.ownerUsername,
+            profileId: favorites.profileId,
             mediaTmdbId: media.tmdbId,
           },
         });
-        console.log(`'${media.title}' added to ${user.username}'s Favorites.`);
+        console.log(`'${media.title}' added to ${profile.username}'s Favorites.`);
       }
     }
   }

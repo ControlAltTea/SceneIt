@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { TextSearch } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import SearchSidebar from "./SearchSidebar";
 
 
 export default function Header() {
+  const { user, setUser } = useUser();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
-  // Scroll threshold for header style
+  /// Scroll threshold for header style
   useEffect(() => {
     const handleScroll = () => {
       const threshold = 8;
@@ -20,13 +21,6 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /// get user from localStorage after signed in/up from AuthPage
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, [location]);
 
 
   return (

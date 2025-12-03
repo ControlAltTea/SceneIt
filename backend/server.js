@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";                     // ✅ use default import
 import cors from 'cors';
 import showRouter from "./routes/show.js";
 import playlistsRouter from './routes/playlists.js';
-import authRoutes from './routes/auth.js';
 import ratingsRoute from './routes/ratings.js';
 
 
@@ -17,7 +16,7 @@ app.use(cors({
   origin: "http://localhost:5173",
 }));
 
-/// Confirms server is running for testing 'playlists' and 'favorites' routes
+/// Confirms server is running for testing routes
 app.get('/', (req, res) => {
   res.send('Backend server ran successfully!');
 });
@@ -45,7 +44,6 @@ app.get("/private/ping", verifyToken, (req, res) => {
 // Protect your shows API
 app.use("/shows", verifyToken, showRouter);
 app.use('/playlists', playlistsRouter);
-app.use('/auth', authRoutes);
 app.use('/ratings', ratingsRoute);
 
 
