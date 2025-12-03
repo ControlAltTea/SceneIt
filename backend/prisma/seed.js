@@ -67,13 +67,14 @@ async function main() {
 
     /// Upsert default favorite playlists for eery user
     const favorites = await prisma.playlist.upsert({
-      where: { name_ownerUsername: { name: "Favorites", profileId: profile.userId } },
+      where: { name_profileId: { name: "Favorites", profileId: profile.userId } },
       update: {},
       create: {
         name: "Favorites",
         isFavorite: true,
         isPublic: false,
-        ownerUsername: profile.userId,
+        profileId: profile.userId,
+        ownerUsername: profile.username,
       },
     });
     console.log(`Favorites playlist created for: ${profile.username}`);
@@ -89,8 +90,9 @@ async function main() {
       /// Connect media to playlist if not already connected
       const existingConnection = await prisma.playlistMedia.findUnique({
         where: {
-          playlistId_mediaTmdbId: {
-            playlistId: favorites.id,
+          playlistName_profileId_mediaTmdbId: {
+            playlistName: favorites.name,
+            profileId: favorites.profileId,
             mediaTmdbId: media.tmdbId,
           },
         },
@@ -99,7 +101,8 @@ async function main() {
       if (!existingConnection) {
         await prisma.playlistMedia.create({
           data: {
-            playlistId: favorites.id,
+            playlistName: favorites.name,
+            profileId: favorites.profileId,
             mediaTmdbId: media.tmdbId,
           },
         });
