@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useUser } from '../context/UserContext';
+import { useLocation, useNavigate } from 'react-router-dom';
 import supabase from '../client';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 
 
 import { Mail, Lock, Eye, EyeClosed, UserRound } from "lucide-react";
 
 export default function AuthPage() {
+  const { user, setUser } = useUser();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [alert, showAlert] = useState({ message: "", show: false });
@@ -45,6 +47,12 @@ const loginUser = async (values) => {
     const session = data.session;
     const user = data.user;
 
+    /// Immediately update context after login
+    setUser({
+      ...user,
+      username: user.user_metadata?.username || null,
+    });
+
     // Store token & user in localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
@@ -75,6 +83,12 @@ const signupUser = async (values) => {
 
     const session = data.session;
     const user = data.user;
+
+    /// Immediately update context after signup
+    setUser({
+      ...user,
+      username: user.user_metadata?.username || null,
+    });
 
     if(session) {
       localStorage.setItem('token', session.access_token);

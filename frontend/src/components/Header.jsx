@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import supabase from '../client';
 import { TextSearch } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import SearchSidebar from "./SearchSidebar";
 
 
 export default function Header() {
+  const { user, setUser } = useUser();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -21,42 +21,6 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /// get user from supabase instead of localStorage after signed in/up from AuthPage
-  
-  useEffect(() => {
-    const loadUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setUser({
-          email: data.user.email,
-          username: data.user.user_metadata?.username || null,
-        });
-      } else {
-        setUser(null)
-      }
-    };
-
-    loadUser()
-  }, [location])
-
-  /// listens for when user logs in or logs out
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setUser({
-            email: session.user.email,
-            username: session.user.user_metadata?.username || null,
-          });
-        } else {
-          setUser(null);
-        }
-      }
-    );
-
-    /// return function that logs user out
-    return () => listener.subscription.unsubscribe();
-  }, [])
 
 
   return (

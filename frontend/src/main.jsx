@@ -1,4 +1,5 @@
 import React from "react";
+import { UserProvider } from './context/UserContext';
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
@@ -12,15 +13,17 @@ import ProfilePage from './pages/ProfilePage.jsx';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path='/auth' element={<AuthPage/>} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/show/:id" element={<ShowPage />} />
-        <Route path='/profile' element={<ProfilePage />} />
-      </Routes>
-    </BrowserRouter>
+    <UserProvider>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path='/auth' element={<AuthPage />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/show/:id" element={<ShowPage />} />
+          <Route path='/profile' element={<ProfilePage />} />
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   </React.StrictMode>
 );
