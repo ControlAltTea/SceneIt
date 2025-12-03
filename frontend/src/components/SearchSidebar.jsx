@@ -44,7 +44,6 @@ export default function SearchSidebar({ isOpen, onClose }) {
   }, [query]);
 
 
-
   return (
     <AnimatePresence>
       {isOpen && (

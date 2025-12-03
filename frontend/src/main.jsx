@@ -6,7 +6,7 @@ import "./index.css";
 
 import Header from "./components/Header.jsx";
 import Home from "./pages/Home.jsx";
-import AuthPage from './components/AuthPage.jsx';
+import AuthPage from './pages/AuthPage.jsx';
 import Search from "./pages/Search.jsx";
 import ShowPage from "./pages/ShowPage.jsx";
 import ProfilePage from './pages/ProfilePage.jsx';
