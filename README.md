@@ -6,7 +6,7 @@
 ![Demo of SceneIt App](![REVIEWS](https://github.com/user-attachments/assets/d58c9874-98af-4696-8cc0-878fc35ef524)
 )
 
-[Check out the Live Demo here →] https://portfolio-4ybe.vercel.app/](https://sceneit1111.netlify.app/
+[Check out the Live Demo here →](https://sceneit1111.netlify.app/)
 
 ## Features
 
