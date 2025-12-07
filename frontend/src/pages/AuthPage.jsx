@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form';
 import { Mail, Lock, Eye, EyeClosed, UserRound } from "lucide-react";
 
 export default function AuthPage() {
+  const AuthPage = () => <h1 className="text-white p-6">Login Page</h1>;
+
   const { user, setUser } = useUser();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -36,33 +38,31 @@ const loginUser = async (values) => {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
-      password: values.password
-    })
-
-    if (error) {
-      throw new Error(error.message);
-    }
-    
-    /// get session and user
-    const session = data.session;
-    const user = data.user;
-
-    /// Immediately update context after login
-    setUser({
-      ...user,
-      username: user.user_metadata?.username || null,
+      password: values.password,
     });
 
-    // Store token & user in localStorage
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    if (error) throw error;
+
+    // Update context immediately
+    setUser({
+      ...data.user,
+      username: data.user.user_metadata?.username || null,
+    });
+
+    // Store session & user in localStorage if you want persistence across reloads
+    if (data.session) {
+      localStorage.setItem("token", data.session.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
 
     showAlert({ show: true, message: "Login successful!" });
     navigate("/");
+
   } catch (error) {
     showAlert({ show: true, message: error.message });
   }
 };
+
 
 /// signup handler function (supabase) that saves username
 const signupUser = async (values) => {
