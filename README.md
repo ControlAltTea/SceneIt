@@ -42,6 +42,7 @@ git switch feature/back-and-frontend-PFP-and-reviews_Merling
 ```bash
 cd frontend/
 npm install prisma@5 @prisma/client@5
+npx prisma init (may have to initialize prisma)
 npx prisma generate
 npm install @supabase/supabase-js
 ```
